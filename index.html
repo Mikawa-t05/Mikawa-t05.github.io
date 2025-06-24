@@ -42,7 +42,7 @@
                 allFeatures = data.features;
 
                 geojsonLayer = L.geoJSON(data, {
-                    style: { color: 'blue', weight: 16 },
+                    style: { color: 'blue', weight: 2 },
                     onEachFeature: (feature, layer) => {
                         layer.on('click', () => {
                             const clickedCoords = JSON.stringify(feature.geometry.coordinates);

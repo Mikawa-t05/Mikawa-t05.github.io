@@ -57,7 +57,7 @@
                 allFeatures = data.features;
 
                 geojsonLayer = L.geoJSON(data, {
-                    style: { color: 'blue', weight: 8 },
+                    style: { color: 'blue', weight: 4 },
                     onEachFeature: (feature, layer) => {
                         layer.on('click', () => {
                             const clickedCoords = JSON.stringify(feature.geometry.coordinates);
@@ -118,7 +118,7 @@
                 const f = layer.feature;
                 if (JSON.stringify(f.geometry.coordinates) === JSON.stringify(selectedFeature.geometry.coordinates)) {
                     if (f.properties.route_name === selectedFeature.properties.route_name) {
-                        layer.setStyle({ color: '#ffff00', weight: 8 });
+                        layer.setStyle({ color: '#ffff00', weight: 4 });
 
 
                     } else {
@@ -126,7 +126,7 @@
                         layer.bringToFront();
                     }
                 } else {
-                    layer.setStyle({ color: 'blue', weight: 8 });
+                    layer.setStyle({ color: 'blue', weight: 4 });
                 }
             });
         }

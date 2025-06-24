@@ -44,7 +44,7 @@
                 geojsonLayer = L.geoJSON(data, {
                     style: { color: 'blue', weight: 2 },
                     onEachFeature: (feature, layer) => {
-                        layer.on('click', () => {
+                        layer.on('touchstart click', () => {
                             const clickedCoords = JSON.stringify(feature.geometry.coordinates);
 
                             const sameRouteFeatures = allFeatures.filter(f =>

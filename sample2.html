@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>全国国道マップ</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+        }
+
+        .route-link {
+            display: block;
+            margin: 4px 0;
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>全国国道路線網</h2>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([35.684036, 139.774467], 15);
+
+        L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
+            maxZoom: 18,
+        }).addTo(map);
+
+        let allFeatures = [];
+        let geojsonLayer;
+
+        fetch('route.geojson')
+            .then(res => res.json())
+            .then(data => {
+                allFeatures = data.features;
+
+                geojsonLayer = L.geoJSON(data, {
+                    style: { color: 'blue', weight: 2 },
+                    onEachFeature: (feature, layer) => {
+                        layer.on('click', () => {
+                            const clickedCoords = JSON.stringify(feature.geometry.coordinates);
+
+                            const sameRouteFeatures = allFeatures.filter(f =>
+                                JSON.stringify(f.geometry.coordinates) === clickedCoords
+                            );
+
+                            sameRouteFeatures.sort((a, b) => a.properties.Rd_SortNo - b.properties.Rd_SortNo);
+
+                            let popupContent = '';
+                            if (sameRouteFeatures.length === 1) {
+                                const f = sameRouteFeatures[0];
+                                popupContent = generateInfoHTML(f);
+                                highlightRoutes(f);
+                            } else {
+                                const linksHTML = sameRouteFeatures.map((f, i) => {
+                                    return `<a class="route-link" data-index="${i}">${f.properties.route_name}</a>`;
+                                }).join('');
+                                popupContent = `
+                  <div><strong>路線を選択：</strong></div>
+                  ${linksHTML}
+                  <div id="routeInfo">${generateInfoHTML(sameRouteFeatures[0])}</div>
+                `;
+                                highlightRoutes(sameRouteFeatures[0]);
+
+                                setTimeout(() => {
+                                    document.querySelectorAll('.route-link').forEach(link => {
+                                        link.addEventListener('click', (e) => {
+                                            const index = e.target.getAttribute('data-index');
+                                            const selected = sameRouteFeatures[index];
+                                            document.getElementById('routeInfo').innerHTML = generateInfoHTML(selected);
+                                            highlightRoutes(selected);
+                                        });
+                                    });
+                                }, 100);
+                            }
+
+                            layer.bindPopup(popupContent).openPopup();
+                        });
+                    }
+                }).addTo(map);
+            });
+
+        function generateInfoHTML(feature) {
+            const nickText = feature.properties.nick_name ? `${feature.properties.nick_name}` : '';
+            const tollText = feature.properties.toll_road === 1 ? '（有料道路）' : '';
+            const typeText = feature.properties.route_type ? `道路の種類：${feature.properties.route_type}` : '';
+            return `
+        <p><strong>路線名:</strong> ${feature.properties.route_name} ${nickText} ${tollText}</p>
+        <p>${typeText}</p>
+        <a href="Route${feature.properties.Rd_SortNo}.html" target="_blank">詳細情報</a>
+      `;
+        }
+
+        function highlightRoutes(selectedFeature) {
+            geojsonLayer.eachLayer(layer => {
+                const f = layer.feature;
+                if (JSON.stringify(f.geometry.coordinates) === JSON.stringify(selectedFeature.geometry.coordinates)) {
+                    if (f.properties.route_name === selectedFeature.properties.route_name) {
+                        layer.setStyle({ color: '#ffff00', weight: 5 });
+
+
+                    } else {
+                        layer.setStyle({ color: '#ff0000', weight: 3 });
+                        layer.bringToFront();
+                    }
+                } else {
+                    layer.setStyle({ color: 'blue', weight: 2 });
+                }
+            });
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+        #map {
+            height: 600px;
+        }
+
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 80px;
+            /* ← ここを変更してズームボタンから離す */
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            max-width: 300px;
+        }
+
+        /* テーブルデザイン */
+
+        .design01 {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        .design01 th {
+            text-align: center;
+            padding: 5px 10px 5px 10px;
+            background: #fff;
+            border: solid 1px #000;
+        }
+
+        .design01 td {
+            padding: 5px 10px 5px 10px;
+            border: solid 1px #000;
+        }
+
+
+        /* ページ内リンク */
+
+        .small-ref {
+            font-size: smaller;
+        }

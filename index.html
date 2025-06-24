@@ -57,6 +57,14 @@
                 allFeatures = data.features;
 
                 geojsonLayer = L.geoJSON(data, {
+
+  style: function (feature) {
+    return {
+      color: 'blue',
+      weight: 10, // 線の太さを太くする
+      opacity: 0.5
+    };
+
                     style: { color: 'blue', weight: 2 },
                     onEachFeature: (feature, layer) => {
                         layer.on('click', () => {

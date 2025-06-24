@@ -7,21 +7,9 @@
     <title>全国国道マップ</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
-        h2 {
-            margin: 0;
-            padding: 1em;
-            background-color: #f8f8f8;
-            text-align: center;
-            font-size: 1.5em;
-        }
-
         #map {
-            flex: 1;
-            /* 残りのスペースをマップに使う */
-            background-color: #ddd;
-            /* 仮の背景色（地図が入る場所） */
+            height: 600px;
         }
-
 
         .route-link {
             display: block;
@@ -59,10 +47,8 @@
 </head>
 
 <body>
-    <div class="full-screen">
-        <h2>全国国道路線網</h2>
-        <div id="map"></div>
-    </div>
+    <h2>全国国道路線網</h2>
+    <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>

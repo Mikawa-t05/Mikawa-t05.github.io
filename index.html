@@ -7,9 +7,21 @@
     <title>全国国道マップ</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
-        #map {
-            height: 600px;
+        h2 {
+            margin: 0;
+            padding: 1em;
+            background-color: #f8f8f8;
+            text-align: center;
+            font-size: 1.5em;
         }
+
+        #map {
+            flex: 1;
+            /* 残りのスペースをマップに使う */
+            background-color: #ddd;
+            /* 仮の背景色（地図が入る場所） */
+        }
+
 
         .route-link {
             display: block;

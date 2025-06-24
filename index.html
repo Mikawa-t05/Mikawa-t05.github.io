@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全国国道マップ</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
@@ -17,26 +18,12 @@
             color: blue;
             text-decoration: underline;
         }
-
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-        }
-
-        .full-screen {
-            width: 100vw;
-            height: 100vh;
-            background-color: lightblue;
-            /* 任意の背景色 */
-        }
     </style>
 </head>
 
 <body>
     <h2>全国国道路線網</h2>
-    <div id="map" class="full-screen"></div>
+    <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>

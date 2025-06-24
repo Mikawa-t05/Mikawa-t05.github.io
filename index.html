@@ -17,12 +17,19 @@
             color: blue;
             text-decoration: underline;
         }
+
+        .full-screen {
+            width: 100vw;
+            height: 100vh;
+            background-color: lightblue;
+            /* 任意の背景色 */
+        }
     </style>
 </head>
 
 <body>
     <h2>全国国道路線網</h2>
-    <div id="map"></div>
+    <div id="map" class="full-screen"></div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>

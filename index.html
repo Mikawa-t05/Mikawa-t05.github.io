@@ -119,10 +119,11 @@
                 if (JSON.stringify(f.geometry.coordinates) === JSON.stringify(selectedFeature.geometry.coordinates)) {
                     if (f.properties.route_name === selectedFeature.properties.route_name) {
                         layer.setStyle({ color: '#ffff00', weight: 4 });
+                        layer.bringToFront();
 
 
                     } else {
-                        layer.setStyle({ color: '#ff0000', weight: 5 });
+                        layer.setStyle({ color: '#ff0000', weight: 3 });
                         layer.bringToFront();
                     }
                 } else {

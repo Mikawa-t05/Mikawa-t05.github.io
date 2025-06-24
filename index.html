@@ -38,7 +38,7 @@
         let allFeatures = [];
         let geojsonLayer;
 
-        fetch('route.geojson')
+/*        fetch('route.geojson')
             .then(res => res.json())
             .then(data => {
                 allFeatures = data.features;
@@ -46,16 +46,6 @@
                 geojsonLayer = L.geoJSON(data, {
                     style: { color: 'blue', weight: 2 },
                     onEachFeature: (feature, layer) => {
-
-                        
-const hitArea = new Konva.Rect({
-  x: layer.x() - 10,
-  y: layer.y() - 10,
-  width: layer.width() + 20,
-  height: layer.height() + 20,
-  fill: 'transparent',
-});
-
                         layer.on('click', () => {
                             const clickedCoords = JSON.stringify(feature.geometry.coordinates);
 
@@ -95,13 +85,6 @@ const hitArea = new Konva.Rect({
 
                             layer.bindPopup(popupContent).openPopup();
                         });
-
-
-
-layer.getParent().add(hitArea);
-hitArea.moveToTop();
-
-
                     }
                 }).addTo(map);
             });
@@ -133,7 +116,64 @@ hitArea.moveToTop();
                     layer.setStyle({ color: 'blue', weight: 2 });
                 }
             });
-        }
+        }*/
+       fetch('route.geojson')
+  .then(res => res.json())
+  .then(data => {
+    allFeatures = data.features;
+
+    // ① イベント用の透明な太い線
+    const hitLayer = L.geoJSON(data, {
+      style: { color: 'transparent', weight: 20, opacity: 0 },
+      onEachFeature: (feature, layer) => {
+        layer.on('click touchstart', () => {
+          const clickedCoords = JSON.stringify(feature.geometry.coordinates);
+
+          const sameRouteFeatures = allFeatures.filter(f =>
+            JSON.stringify(f.geometry.coordinates) === clickedCoords
+          );
+
+          sameRouteFeatures.sort((a, b) => a.properties.Rd_SortNo - b.properties.Rd_SortNo);
+
+          let popupContent = '';
+          if (sameRouteFeatures.length === 1) {
+            const f = sameRouteFeatures[0];
+            popupContent = generateInfoHTML(f);
+            highlightRoutes(f);
+          } else {
+            const linksHTML = sameRouteFeatures.map((f, i) => {
+              return `<a class="route-link" data-index="${i}">${f.properties.route_name}</a>`;
+            }).join('');
+            popupContent = `
+              <div><strong>路線を選択：</strong></div>
+              ${linksHTML}
+              <div id="routeInfo">${generateInfoHTML(sameRouteFeatures[0])}</div>
+            `;
+            highlightRoutes(sameRouteFeatures[0]);
+
+            setTimeout(() => {
+              document.querySelectorAll('.route-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                  const index = e.target.getAttribute('data-index');
+                  const selected = sameRouteFeatures[index];
+                  document.getElementById('routeInfo').innerHTML = generateInfoHTML(selected);
+                  highlightRoutes(selected);
+                });
+              });
+            }, 100);
+          }
+
+          layer.bindPopup(popupContent).openPopup();
+        });
+      }
+    }).addTo(map);
+
+    // ② 表示用の細い青線
+    geojsonLayer = L.geoJSON(data, {
+      style: { color: 'blue', weight: 2 }
+    }).addTo(map);
+  });
+
 
     </script>
 </body>

@@ -57,15 +57,7 @@
                 allFeatures = data.features;
 
                 geojsonLayer = L.geoJSON(data, {
-
-  style: function (feature) {
-    return {
-      color: 'blue',
-      weight: 10, // 線の太さを太くする
-      opacity: 0.5
-    };
-
-                    style: { color: 'blue', weight: 2 },
+                    style: { color: 'blue', weight: 128 },
                     onEachFeature: (feature, layer) => {
                         layer.on('click', () => {
                             const clickedCoords = JSON.stringify(feature.geometry.coordinates);

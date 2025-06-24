@@ -18,12 +18,7 @@
             text-decoration: underline;
         }
 
-
-        .clickable-layer {
-            padding: 20px;
-            /* 見た目は変えずにクリック範囲を広げる */
-            cursor: pointer;
-        }
+        
     </style>
 </head>
 
@@ -51,7 +46,17 @@
                 geojsonLayer = L.geoJSON(data, {
                     style: { color: 'blue', weight: 2 },
                     onEachFeature: (feature, layer) => {
-                        layer.on('touchstart click', () => {
+
+                        
+const hitArea = new Konva.Rect({
+  x: layer.x() - 10,
+  y: layer.y() - 10,
+  width: layer.width() + 20,
+  height: layer.height() + 20,
+  fill: 'transparent',
+});
+
+                        layer.on('click', () => {
                             const clickedCoords = JSON.stringify(feature.geometry.coordinates);
 
                             const sameRouteFeatures = allFeatures.filter(f =>
@@ -90,6 +95,13 @@
 
                             layer.bindPopup(popupContent).openPopup();
                         });
+
+
+
+layer.getParent().add(hitArea);
+hitArea.moveToTop();
+
+
                     }
                 }).addTo(map);
             });

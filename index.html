@@ -118,15 +118,15 @@
                 const f = layer.feature;
                 if (JSON.stringify(f.geometry.coordinates) === JSON.stringify(selectedFeature.geometry.coordinates)) {
                     if (f.properties.route_name === selectedFeature.properties.route_name) {
-                        layer.setStyle({ color: '#ffff00', weight: 5 });
+                        layer.setStyle({ color: '#ffff00', weight: 16 });
 
 
                     } else {
-                        layer.setStyle({ color: '#ff0000', weight: 3 });
+                        layer.setStyle({ color: '#ff0000', weight: 12 });
                         layer.bringToFront();
                     }
                 } else {
-                    layer.setStyle({ color: 'blue', weight: 2 });
+                    layer.setStyle({ color: 'blue', weight: 8 });
                 }
             });
         }

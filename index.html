@@ -106,9 +106,11 @@
             const nickText = feature.properties.nick_name ? `${feature.properties.nick_name}` : '';
             const tollText = feature.properties.toll_road === 1 ? '（有料道路）' : '';
             const typeText = feature.properties.route_type ? `道路の種類：${feature.properties.route_type}` : '';
+            const Rd_adminText = feature.properties.DGH_Route === 1 ? '指定区間' : '';
             return `
         <p><strong>路線名:</strong> ${feature.properties.route_name} ${nickText} ${tollText}</p>
         <p>${typeText}</p>
+        <p>${Rd_adminText}</p?
         <a href="Route${feature.properties.Rd_SortNo}.html" target="_blank">詳細情報</a>
       `;
         }

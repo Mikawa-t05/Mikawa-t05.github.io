@@ -15,6 +15,9 @@
     <h2>国道１号</h2>
     <p>従来の東海道と大阪街道からなる路線で、東京・日本橋を起点に置き、川崎や横浜、清水、静岡、浜松、名古屋、四日市、大津、京都といった重要都市を連絡しながら大阪・梅田新道に至る一般国道である。</p>
     <h3>一般国道の路線を指定する政令<a href="#001" class="small-ref">[1]</a>に基づく起終点</h3>
+    
+ <input type="file" id="fileInput" accept="Book1.csv">
+
     <table class="design01">
         <tr>
             <th>起点</th>
@@ -221,6 +224,43 @@
                 // ← ここで地物全体が表示されるようにズームと中心を調整
                 map.fitBounds(geojsonLayer.getBounds());
             });
+
+        
+
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const text = e.target.result;
+        const lines = text.split('\n');
+        const officeLinks = {};
+
+        lines.forEach(line => {
+          const parts = line.trim().split(',');
+          if (parts.length >= 4 && parts[3].startsWith('http')) {
+            const name = parts[1].trim();
+            const url = parts[3].trim();
+            officeLinks[name] = url;
+          }
+        });
+
+        const table = document.getElementById('officeTable');
+        const cells = table.getElementsByTagName('td');
+
+        for (let cell of cells) {
+          const text = cell.textContent.trim();
+          if (officeLinks[text]) {
+            cell.innerHTML = `<a href="${officeLinks[text]}" target="_blank">${text}</a>`;
+          }
+        }
+      };
+
+      reader.readAsText(file, 'UTF-8');
+    });
+
+        
     </script>
 </body>
 

@@ -35,7 +35,7 @@
     </p>
 
     <h3>道路管理者（一般部）</h3>
-    <table class="design01">
+    <table class="design01" id="OfficeTable">
         <tr>
             <th>管理区分</th>
             <th colspan="2">管理者</th>
@@ -224,6 +224,40 @@
                 map.fitBounds(geojsonLayer.getBounds());
             });
 
+
+
+        
+const officeLinks = {
+  "東京国道事務所": "https://www.ktr.mlit.go.jp/toukoku/toukoku00009.html",
+  "相武国道事務所": "https://www.ktr.mlit.go.jp/ktr_content/content/000915097.pdf",
+  "横浜国道事務所": "https://www.ktr.mlit.go.jp/ktr_content/content/000798659.pdf",
+  "沼津河川国道事務所": "https://www.cbr.mlit.go.jp/numazu/road/kanri/",
+  "静岡国道事務所": "https://www.cbr.mlit.go.jp/shizukoku/office/about.html",
+  "浜松河川国道事務所": "https://www.cbr.mlit.go.jp/hamamatsu/road/route1/",
+  "名古屋国道事務所": "https://www.cbr.mlit.go.jp/meikoku/office/area/",
+  "三重河川国道事務所": "https://www.cbr.mlit.go.jp/mie/road/works/management-road.html",
+  "滋賀国道事務所": "https://www.kkr.mlit.go.jp/shiga/syoukai/kanri.html",
+  "京都国道事務所": "https://www.kkr.mlit.go.jp/kyoto/office/summary/index.html",
+  "大阪国道事務所": "https://www.kkr.mlit.go.jp/osaka/prof/kanrikukan/"
+};
+
+// 表の事務所名セルをリンクに変換
+document.querySelectorAll("#officeTable tbody tr").forEach(row => {
+  const officeCell = row.cells[1];
+  const officeName = officeCell.textContent.trim();
+
+  if (officeLinks[officeName]) {
+    const a = document.createElement("a");
+    a.href = officeLinks[officeName];
+    a.textContent = officeName;
+    a.target = "_blank";
+    officeCell.textContent = ""; // 元のテキストを消す
+    officeCell.appendChild(a);
+  }
+});
+
+        
+        
     </script>
 </body>
 

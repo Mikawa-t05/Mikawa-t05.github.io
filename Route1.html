@@ -224,6 +224,37 @@
                 map.fitBounds(geojsonLayer.getBounds());
             });
 
+
+
+        fetch('Book1.csv')
+            .then(response => response.text())
+            .then(data => {
+                const officeLinks = {};
+                const lines = data.trim().split('\n');
+
+                lines.forEach(line => {
+                    const parts = line.split(',');
+                    if (parts.length >= 4 && parts[3].startsWith('http')) {
+                        const name = parts[1].trim();
+                        const url = parts[3].trim();
+                        officeLinks[name] = url;
+                    }
+                });
+
+                const table = document.getElementById('officeTable');
+                const cells = table.getElementsByTagName('td');
+
+                for (let cell of cells) {
+                    const text = cell.textContent.trim();
+                    if (officeLinks[text]) {
+                        cell.innerHTML = `<a href="${officeLinks[text]}" target="_blank">${text}</a>`;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('CSV読み込みエラー:', error);
+            });
+
     </script>
 </body>
 

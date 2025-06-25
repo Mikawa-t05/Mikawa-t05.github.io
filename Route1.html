@@ -17,7 +17,7 @@
     <h3>一般国道の路線を指定する政令<a href="#001" class="small-ref">[1]</a>に基づく起終点</h3>
 
 
-    <table class="design01" id="officeTable">
+    <table class="design01">
         <tr>
             <th>起点</th>
             <th>終点</th>
@@ -223,47 +223,6 @@
                 // ← ここで地物全体が表示されるようにズームと中心を調整
                 map.fitBounds(geojsonLayer.getBounds());
             });
-
-
-
-
-
-    document.addEventListener('DOMContentLoaded', () => {
-      fetch('Book1.csv')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('CSVファイルの読み込みに失敗しました');
-          }
-          return response.text();
-        })
-        .then(data => {
-          const officeLinks = {};
-          const lines = data.trim().split('\n');
-
-          lines.forEach(line => {
-            const parts = line.split(',');
-            if (parts.length >= 4 && parts[3].startsWith('http')) {
-              const name = parts[1].trim();
-              const url = parts[3].trim();
-              officeLinks[name] = url;
-            }
-          });
-
-          const table = document.getElementById('officeTable');
-          const cells = table.getElementsByTagName('td');
-
-          for (let cell of cells) {
-            const text = cell.textContent.trim();
-            if (officeLinks[text]) {
-              cell.innerHTML = `<a href="${officeLinks[text]}" target="_blank">${text}</a>`;
-            }
-          }
-        })
-        .catch(error => {
-          console.error('CSV読み込みエラー:', error);
-        });
-    });
-
 
     </script>
 </body>

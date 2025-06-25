@@ -1,42 +1,80 @@
-        #map {
-            aspect-ratio: 16 / 9;
-        }
+body {
+    margin: 0;
+    overflow: hidden;
+}
 
-        #info {
-            position: absolute;
-            top: 100px;
-            left: 20px;
-            /* ← ここを変更してズームボタンから離す */
-            z-index: 1000;
-            background: white;
-            padding: 10px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-            max-width: 300px;
-        }
+.container {
+    display: flex;
+    height: 100vh;
+}
 
-        /* テーブルデザイン */
+#map {
+    width: 50%;
+    height: 100vh;
+}
 
-        .design01 {
-            border-collapse: collapse;
-            border-spacing: 0;
-        }
+.content {
+    width: 50%;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 1rem;
+    background-color: #f9f9f9;
+}
 
-        .design01 th {
-            text-align: center;
-            padding: 5px 10px 5px 10px;
-            background: #fff;
-            border: solid 1px #000;
-        }
+@media screen and (max-width: 768px) {
+    .container {
+        display: block;
+    }
 
-        .design01 td {
-            padding: 5px 10px 5px 10px;
-            border: solid 1px #000;
-        }
+    #map {
+        width: 100%;
+        height: 300px;
+    }
+
+    .content {
+        width: 100%;
+        height: auto;
+        overflow-y: visible;
+    }
+}
 
 
-        /* ページ内リンク */
 
-        .small-ref {
-            font-size: smaller;
-        }
+#info {
+    position: absolute;
+    top: 100px;
+    left: 20px;
+    /* ← ここを変更してズームボタンから離す */
+    z-index: 1000;
+    background: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    max-width: 300px;
+}
+
+/* テーブルデザイン */
+
+.design01 {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.design01 th {
+    text-align: center;
+    padding: 5px 10px 5px 10px;
+    background: #fff;
+    border: solid 1px #000;
+}
+
+.design01 td {
+    padding: 5px 10px 5px 10px;
+    border: solid 1px #000;
+}
+
+
+/* ページ内リンク */
+
+.small-ref {
+    font-size: smaller;
+}

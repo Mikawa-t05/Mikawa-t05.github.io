@@ -177,9 +177,9 @@
                             layer.bringToFront();
 
                             let props = feature.properties;
-                            let html = `<strong>属性情報:</strong><br>`;
-                            html += `道路の種類：${props.route_type}<br>`;
-                            html += `路線名：${props.route_name}<br>`;
+                            let html = `<strong>属性情報:</strong><br><table class="design01">`;
+                            html += `<tr><td>道路の種類</td><td>${props.route_type}</td></tr>`;
+                            html += `<tr><td>路線名</td><td>${props.route_name}</td><tr>`;
 
                             // 通称名の表示条件
                             const isTollRoad = props.toll_road === 1;
@@ -188,26 +188,27 @@
                             const isDGH_Route = props.DGH_Route === 1;
 
                             if (!isTollRoad && hasNickName) {
-                                html += `通称名：${props.nick_name}<br>`;
+                                html += `<tr><td>通称名</td><td>${props.nick_name}</td></tr>`;
                             }
 
                             if (isTollRoad && hasNickName) {
-                                html += `有料道路名：${props.nick_name}<br>`;
+                                html += `<tr><td>有料道路名</td><td>${props.nick_name}</td><tr>`;
                             }
 
                             if (isDGH_Route) {
                                 if (isTollRoad) {
-                                    html += `直管国道（NEXCO管理）<br>`;
+                                    html += `<tr><td colspan="2">直管国道（NEXCO管理）</td></tr>`;
                                 } else {
-                                    html += `直管国道<br>`;
+                                    html += `<tr><td colspan="2">直管国道</td></tr>`;
                                 }
                             } else {
                                 if (isTollRoad) {
-                                    html += `補助国道（道路公社管理）<br>`;
+                                    html += `<tr><td colspan="2">補助国道（道路公社管理）</td></tr>`;
                                 } else {
-                                    html += `補助国道<br>`;
+                                    html += `<tr><td colspan="2">補助国道</td></tr>`;
                                 }
                             }
+                            html += `</table>`;
 
                             //                            html += `整理番号：${props.Rd_SortNo}<br>`;
 

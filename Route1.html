@@ -1,6 +1,238 @@
 <!DOCTYPE html>
 <html>
+<!DOCTYPE html>
+<html>
 
+<head>
+    <meta charset="utf-8" />
+    <title>一般国道１号 - 詳細情報 -</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="myStyles.css">
+</head>
+
+<body>
+    <div id="info">地物をクリックすると属性情報が表示されます。</div>
+    <div id="map"></div>
+    <h2>国道１号</h2>
+    <p>従来の東海道と大阪街道からなる路線で、東京・日本橋を起点に置き、川崎や横浜、清水、静岡、浜松、名古屋、四日市、大津、京都といった重要都市を連絡しながら大阪・梅田新道に至る一般国道である。</p>
+    <h3>一般国道の路線を指定する政令<a href="#001" class="small-ref">[1]</a>に基づく起終点</h3>
+
+
+    <table class="design01">
+        <tr>
+            <th>起点</th>
+            <th>終点</th>
+            <th>重要な経由地</th>
+        </tr>
+        <tr>
+            <td style="text-align: center;">東京都中央区</td>
+            <td style="text-align: center;">大阪市</td>
+            <td>東京都千代田区（霞が関一丁目）　同都港区（高輪一丁目）　同都品川区（東五反田一丁目）　同都大田区（池上二丁目）　川崎市（幸区）　横浜市（神奈川区）　藤沢市（城南四丁目）　茅ヶ崎市（下町屋）　平塚市（浅間町　袖ケ浜）　神奈川県中郡大磯町　小田原市　同県足柄下郡箱根町　三島市　沼津市　富士市　清水市　静岡市（栄町）　藤枝市　島田市　静岡県榛原郡金谷町　掛川市　袋井市　磐田市（三ケ野）　浜松市　湖西市　同県浜名郡新居町　豊橋市　愛知県宝飯郡小坂井町　豊川市（白鳥町）　岡崎市　安城市（宇頭茶屋町）　知立市　刈谷市（今川町）　豊明市　名古屋市（熱田区）　同県海部郡弥富町　桑名市（安永）　四日市市（采女町）　鈴鹿市（石薬師町）　亀山市　三重県鈴鹿郡関町　滋賀県甲賀郡水口町　同県栗太郡栗東町　草津市　大津市（瀬田）　京都市（下京区）　宇治市　京都府久世郡久御山町　八幡市　枚方市　交野市　寝屋川市　門真市　守口市
+            </td>
+        </tr>
+    </table>
+    <h3>一般国道の指定区間を指定する政令<a href="#002" class="small-ref">[2]</a>に基づく指定区間</h3>
+    <p>東京都中央区日本橋から大阪市北区梅田一丁目三番まで（横浜市西区浜松町六十六番から同市戸塚区柏尾町字尾崎台四百四十七番を経て同区上矢部町字坂本二千九百二十八番一まで、同区柏尾町字尾崎台四百四十七番から同区戸塚町四千九十七番を経て同区戸塚町字十ノ区二千二十八番の一まで並びに小田原市風祭字壗下百五十七番二から神奈川県足柄下郡箱根町湯本字下耕地三十二番一及び同町大字宮の下四十七番を経て同町箱根字畑引山三百八十一番三までを除く。）
+    </p>
+
+    <h3>道路管理者（一般部）</h3>
+    <table class="design01">
+        <tr>
+            <th>管理区分</th>
+            <th colspan="2">管理者</th>
+        </tr>
+        <tr>
+            <td rowspan="10" style="text-align: center;">直管国道</td>
+            <td>起点～多摩川大橋北詰</td>
+            <td><a href="https://www.ktr.mlit.go.jp/toukoku/toukoku00009.html">東京国道事務所</a></td>
+        </tr>
+        <tr>
+            <td>多摩川大橋北詰～横浜新道接続点
+                <br>横浜市神奈川区東神奈川二丁目～横浜市西区浜松町・国道１６号交点
+                <br>横浜新道接続点～（戸塚道路）～（箱根新道）～神奈川県・静岡県境
+            </td>
+            <td><a href="https://www.ktr.mlit.go.jp/ktr_content/content/000798659.pdf">横浜国道事務所</a></td>
+        </tr>
+        <tr>
+            <td>神奈川県・静岡県境～沼津市・富士市境
+                <br>伊豆縦貫自動車道
+            </td>
+            <td><a href="https://www.cbr.mlit.go.jp/numazu/road/kanri/">沼津河川国道事務所</a></td>
+        </tr>
+        <tr>
+            <td>沼津市・富士市境～野田インター</td>
+            <td><a href="https://www.cbr.mlit.go.jp/shizukoku/office/about.html">静岡国道事務所</a></td>
+        </tr>
+        <tr>
+            <td>野田インター～豊橋東インター</td>
+            <td><a href="https://www.cbr.mlit.go.jp/hamamatsu/road/route1/">浜松河川国道事務所</a></td>
+        </tr>
+        <tr>
+            <td>豊橋東インター～尾張大橋西詰</td>
+            <td><a href="https://www.cbr.mlit.go.jp/meikoku/office/area/">名古屋国道事務所</a></td>
+        </tr>
+        <tr>
+            <td>尾張大橋西詰～亀山市関町坂下（鈴鹿トンネル起点側）</td>
+            <td><a href="https://www.cbr.mlit.go.jp/mie/road/works/management-road.html">三重河川国道事務所</a></td>
+        </tr>
+        <tr>
+            <td>亀山市関町坂下（鈴鹿トンネル起点側）～滋賀県・京都府境
+                <br>京滋バイパス一般部
+            </td>
+            <td><a href="https://www.kkr.mlit.go.jp/shiga/syoukai/kanri.html">滋賀国道事務所</a></td>
+        </tr>
+        <tr>
+            <td>滋賀県・京都府境～大阪府・京都府境
+                <br>京滋バイパス一般部
+                <br>第二京阪道路側道部
+            </td>
+            <td><a href="https://www.kkr.mlit.go.jp/kyoto/office/summary/index.html">京都国道事務所</a></td>
+        </tr>
+        <tr>
+            <td>京都府・大阪府境～終点
+                <br>第二京阪道路側道部
+            </td>
+            <td><a href="https://www.kkr.mlit.go.jp/osaka/prof/kanrikukan/">大阪国道事務所</a></td>
+        </tr>
+        <tr>
+            <td rowspan="2" style="text-align: center;">補助国道</td>
+            <td>横浜市西区浜松町（国道１６号交点）～戸塚区大坂上付近
+                <br>横浜市戸塚区柏尾町～横浜新道接続点
+            </td>
+            <td><a href="https://www.city.yokohama.lg.jp/kurashi/machizukuri-kankyo/doro/qa/shirabetai/012.html">横浜市</a>
+            </td>
+        </tr>
+        <tr>
+            <td>小田原市風祭～神奈川県足柄下郡箱根町宮ノ下～箱根新道接続点</td>
+            <td><a href="https://www.pref.kanagawa.jp/docs/n5h/cnt/f704/p8050.html">神奈川県</a></td>
+        </tr>
+    </table>
+
+    <h3>道路管理者（有料道路）</h3>
+    <table class="design01">
+        <tr>
+            <th>管理区分</th>
+            <th colspan="2">管理者</th>
+        </tr>
+        <tr>
+            <td rowspan="5" style="text-align: center;">指定区間国道</td>
+            <td>横浜新道</td>
+            <td><a href="https://www.e-nexco.co.jp/company/overview/business_field/">東日本高速道路株式会社（NEXCO東日本）</a></td>
+        </tr>
+        <tr>
+            <td>新湘南バイパス</td>
+            <td rowspan="2"><a
+                    href="https://www.c-nexco.co.jp/corporate/company/overview/area/">中日本高速道路株式会社（NEXCO中日本）</a></td>
+        </tr>
+        <tr>
+            <td>西湘バイパス</td>
+        </tr>
+        <tr>
+            <td>京滋バイパス</td>
+            <td rowspan="2"><a href="https://www.w-nexco.co.jp/search/highway_guide/">西日本高速道路株式会社（NEXCO西日本）</a></td>
+        </tr>
+        <tr>
+            <td>第二京阪道路</td>
+        </tr>
+    </table>
+
+    <h3>出典</h3>
+    <ol>
+        <li><a href="https://laws.e-gov.go.jp/law/340CO0000000058" id="001">一般国道の路線を指定する政令</a> - 昭和四十年政令第五十八号 /
+            平成16年4月1日改正</li>
+        <li><a href="https://laws.e-gov.go.jp/law/333CO0000000164" id="002">一般国道の指定区間を指定する政令</a> - 昭和三十三年政令第百六十四号 /
+            令和7年4月1日改正</li>
+    </ol>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map');
+
+        L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
+            maxZoom: 18,
+        }).addTo(map);
+
+        const infoDiv = document.getElementById('info');
+        let highlightLayer;
+
+        fetch('route.geojson')
+            .then(response => response.json())
+            .then(data => {
+                const filtered = {
+                    type: "FeatureCollection",
+                    features: data.features.filter(f => f.properties.Rd_SortNo === 1)
+                };
+
+                const geojsonLayer = L.geoJSON(filtered, {
+                    onEachFeature: function (feature, layer) {
+                        layer.on('click', function () {
+                            if (highlightLayer) {
+                                geojsonLayer.resetStyle(highlightLayer);
+                            }
+                            highlightLayer = layer;
+                            layer.setStyle({
+                                color: 'red',
+                                weight: 5
+                            });
+                            layer.bringToFront();
+
+                            let props = feature.properties;
+                            let html = `<strong>属性情報:</strong><br><table class="design01">`;
+                            html += `<tr><td>道路の種類</td><td>${props.route_type}</td></tr>`;
+                            html += `<tr><td>路線名</td><td>${props.route_name}</td><tr>`;
+
+                            // 通称名の表示条件
+                            const isTollRoad = props.toll_road === 1;
+                            const hasNickName = props.nick_name && props.nick_name.toUpperCase() !== "NULL";
+
+                            const isDGH_Route = props.DGH_Route === 1;
+
+                            if (!isTollRoad && hasNickName) {
+                                html += `<tr><td>通称名</td><td>${props.nick_name}</td></tr>`;
+                            }
+
+                            if (isTollRoad && hasNickName) {
+                                html += `<tr><td>有料道路名</td><td>${props.nick_name}</td><tr>`;
+                            }
+
+                            if (isDGH_Route) {
+                                if (isTollRoad) {
+                                    html += `<tr><td colspan="2">直管国道（NEXCO管理）</td></tr>`;
+                                } else {
+                                    html += `<tr><td colspan="2">直管国道</td></tr>`;
+                                }
+                            } else {
+                                if (isTollRoad) {
+                                    html += `<tr><td colspan="2">補助国道（道路公社管理）</td></tr>`;
+                                } else {
+                                    html += `<tr><td colspan="2">補助国道</td></tr>`;
+                                }
+                            }
+                            html += `</table>`;
+
+                            //                            html += `整理番号：${props.Rd_SortNo}<br>`;
+
+                            infoDiv.innerHTML = html;
+                        });
+                    },
+                    style: {
+                        color: 'blue',
+                        weight: 5
+                    }
+                });
+
+                geojsonLayer.addTo(map);
+
+                // ← ここで地物全体が表示されるようにズームと中心を調整
+                map.fitBounds(geojsonLayer.getBounds());
+            });
+
+    </script>
+</body>
+
+</html>
 <head>
     <meta charset="utf-8" />
     <title>一般国道１号 - 詳細情報 -</title>

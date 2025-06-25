@@ -36,10 +36,13 @@
 
     <h3>道路管理者（一般部）</h3>
     <table class="design01" id="OfficeTable">
+        <thead>
         <tr>
             <th>管理区分</th>
             <th colspan="2">管理者</th>
         </tr>
+        </thead>
+        <tbody>
         <tr>
             <td rowspan="10" style="text-align: center;">直管国道</td>
             <td>起点～多摩川大橋北詰</td>
@@ -104,6 +107,7 @@
             <td>小田原市風祭～神奈川県足柄下郡箱根町宮ノ下～箱根新道接続点</td>
             <td>神奈川県</td>
         </tr>
+        </tbody>
     </table>
 
     <h3>道路管理者（有料道路）</h3>
@@ -243,7 +247,7 @@ const officeLinks = {
 
 // 表の事務所名セルをリンクに変換
 document.querySelectorAll("#officeTable tbody tr").forEach(row => {
-  const officeCell = row.cells[1];
+  const officeCell = row.cells[2];
   const officeName = officeCell.textContent.trim();
 
   if (officeLinks[officeName]) {

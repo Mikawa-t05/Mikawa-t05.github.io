@@ -49,9 +49,9 @@
                     <td><a href="https://www.ktr.mlit.go.jp/toukoku/toukoku00009.html">東京国道事務所</a></td>
                 </tr>
                 <tr>
-                    <td>多摩川大橋北詰～横浜新道接続点
-                        <br>横浜市神奈川区東神奈川二丁目～横浜市西区浜松町・国道１６号交点
-                        <br>横浜新道接続点～（戸塚道路）～（箱根新道）～神奈川県・静岡県境
+                    <td>多摩川大橋北詰～横浜市保土ヶ谷区常盤台（横浜新道接続点）
+                        <br>横浜市神奈川区東神奈川二丁目～横浜市西区浜松町（国道１６号交点）
+                        <br>横浜市戸塚区上矢部町（横浜新道接続点）～（戸塚道路）～（箱根新道）～神奈川県・静岡県境
                     </td>
                     <td><a href="https://www.ktr.mlit.go.jp/ktr_content/content/000798659.pdf">横浜国道事務所</a></td>
                 </tr>
@@ -79,34 +79,34 @@
                 </tr>
                 <tr>
                     <td>亀山市関町坂下（鈴鹿トンネル起点側）～滋賀県・京都府境
-                        <br>京滋バイパス一般部
+                        <br>京滋バイパス一般部（滋賀県内）
                     </td>
                     <td><a href="https://www.kkr.mlit.go.jp/shiga/syoukai/kanri.html">滋賀国道事務所</a></td>
                 </tr>
                 <tr>
                     <td>滋賀県・京都府境～大阪府・京都府境
-                        <br>京滋バイパス一般部
-                        <br>第二京阪道路側道部
+                        <br>京滋バイパス一般部（京都府内）
+                        <br>第二京阪道路側道部（京都府内）
                     </td>
                     <td><a href="https://www.kkr.mlit.go.jp/kyoto/office/summary/index.html">京都国道事務所</a></td>
                 </tr>
                 <tr>
                     <td>京都府・大阪府境～終点
-                        <br>第二京阪道路側道部
+                        <br>第二京阪道路側道部（大阪府内）
                     </td>
                     <td><a href="https://www.kkr.mlit.go.jp/osaka/prof/kanrikukan/">大阪国道事務所</a></td>
                 </tr>
                 <tr>
                     <td rowspan="2" style="text-align: center;">補助国道</td>
                     <td>横浜市西区浜松町（国道１６号交点）～戸塚区大坂上付近
-                        <br>横浜市戸塚区柏尾町～横浜新道接続点
+                        <br>横浜市戸塚区柏尾町～横浜市戸塚区上矢部町（横浜新道接続点）
                     </td>
                     <td><a
                             href="https://www.city.yokohama.lg.jp/kurashi/machizukuri-kankyo/doro/qa/shirabetai/012.html">横浜市</a>
                     </td>
                 </tr>
                 <tr>
-                    <td>小田原市風祭～神奈川県足柄下郡箱根町宮ノ下～箱根新道接続点</td>
+                    <td>小田原市風祭～神奈川県足柄下郡箱根町宮ノ下～神奈川県足柄下郡箱根町（箱根新道接続点）</td>
                     <td><a href="https://www.pref.kanagawa.jp/docs/n5h/cnt/f704/p8050.html">神奈川県</a></td>
                 </tr>
             </table>
@@ -206,18 +206,11 @@
                             }
 
                             if (isDGH_Route) {
-                                if (isTollRoad) {
-                                    html += `<tr><td colspan="2">直管国道（NEXCO管理）</td></tr>`;
-                                } else {
                                     html += `<tr><td colspan="2">直管国道</td></tr>`;
-                                }
                             } else {
-                                if (isTollRoad) {
-                                    html += `<tr><td colspan="2">補助国道（道路公社管理）</td></tr>`;
-                                } else {
                                     html += `<tr><td colspan="2">補助国道</td></tr>`;
-                                }
                             }
+
                             html += `</table>`;
 
                             //                            html += `整理番号：${props.Rd_SortNo}<br>`;

@@ -42,7 +42,7 @@
                     <th colspan="2">管理者</th>
                 </tr>
                 <tr>
-                    <td rowspan="2" style="text-align: center;">補助国道</td>
+                    <td rowspan="2" style="text-align: center;">補助国道<br>（指定区間外）</td>
                     <td>全線</td>
                     <td><a href="https://www.kensetsu.metro.tokyo.lg.jp/jimusho">東京都</a></td>
                     </td>
@@ -66,6 +66,7 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         const map = L.map('map');
+        const targetRouteNo = 130; // ← 表示したい国道番号をここで設定
 
         L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
             attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
@@ -74,72 +75,83 @@
 
         const infoDiv = document.getElementById('info');
         let highlightLayer;
+        let allFeatures = [];
+
+        function generateInfoHTML(feature, duplicates = []) {
+            const props = feature.properties;
+            let html = `<strong>属性情報:</strong><br><table class="design01">`;
+            html += `<tr><td>道路の種類</td><td>${props.route_type}</td></tr>`;
+            html += `<tr><td>路線名</td><td>${props.route_name}</td></tr>`;
+
+            const isTollRoad = props.toll_road === 1;
+            const hasNickName = props.nick_name && props.nick_name.toUpperCase() !== "NULL";
+            const isDGH_Route = props.DGH_Route === 1;
+
+            if (!isTollRoad && hasNickName) {
+                html += `<tr><td>通称名</td><td>${props.nick_name}</td></tr>`;
+            }
+
+            if (isTollRoad && hasNickName) {
+                html += `<tr><td>有料道路名</td><td>${props.nick_name}</td></tr>`;
+            }
+
+            html += `<tr><td colspan="2">${isDGH_Route ? '直管国道' : '補助国道'}</td></tr>`;
+
+            if (duplicates.length > 1) {
+                const others = duplicates.filter(f => f !== feature);
+                const links = others.map(f => {
+                    const name = f.properties.route_name;
+                    const no = f.properties.Rd_SortNo;
+                    return `<a href="Route${no}.html" target="_blank">${name}</a>`;
+                }).join('<br>');
+                html += `<tr><td>重複区間</td><td>${links}</td></tr>`;
+            }
+
+            html += `</table>`;
+            return html;
+        }
+
+        function highlightRoutes(feature) {
+            if (highlightLayer) {
+                geojsonLayer.resetStyle(highlightLayer);
+            }
+            geojsonLayer.eachLayer(layer => {
+                if (layer.feature === feature) {
+                    highlightLayer = layer;
+                    layer.setStyle({ color: 'red', weight: 5 });
+                    layer.bringToFront();
+                }
+            });
+        }
+
+        let geojsonLayer;
 
         fetch('route.geojson')
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
-                const filtered = {
-                    type: "FeatureCollection",
-                    features: data.features.filter(f => f.properties.Rd_SortNo === 130)
-                };
+                allFeatures = data.features;
 
-                const geojsonLayer = L.geoJSON(filtered, {
-                    onEachFeature: function (feature, layer) {
-                        layer.on('click', function () {
-                            if (highlightLayer) {
-                                geojsonLayer.resetStyle(highlightLayer);
-                            }
-                            highlightLayer = layer;
-                            layer.setStyle({
-                                color: 'red',
-                                weight: 5
-                            });
-                            layer.bringToFront();
+                const filteredFeatures = allFeatures.filter(f => f.properties.Rd_SortNo === targetRouteNo);
 
-                            let props = feature.properties;
-                            let html = `<strong>属性情報:</strong><br><table class="design01">`;
-                            html += `<tr><td>道路の種類</td><td>${props.route_type}</td></tr>`;
-                            html += `<tr><td>路線名</td><td>${props.route_name}</td><tr>`;
+                geojsonLayer = L.geoJSON({ type: "FeatureCollection", features: filteredFeatures }, {
+                    style: { color: 'blue', weight: 4 },
+                    onEachFeature: (feature, layer) => {
+                        layer.on('click', () => {
+                            const clickedCoords = JSON.stringify(feature.geometry.coordinates);
 
-                            // 通称名の表示条件
-                            const isTollRoad = props.toll_road === 1;
-                            const hasNickName = props.nick_name && props.nick_name.toUpperCase() !== "NULL";
+                            const sameRouteFeatures = allFeatures.filter(f =>
+                                JSON.stringify(f.geometry.coordinates) === clickedCoords
+                            );
 
-                            const isDGH_Route = props.DGH_Route === 1;
-
-                            if (!isTollRoad && hasNickName) {
-                                html += `<tr><td>通称名</td><td>${props.nick_name}</td></tr>`;
-                            }
-
-                            if (isTollRoad && hasNickName) {
-                                html += `<tr><td>有料道路名</td><td>${props.nick_name}</td><tr>`;
-                            }
-
-                            if (isDGH_Route) {
-                                html += `<tr><td colspan="2">直管国道</td></tr>`;
-                            } else {
-                                html += `<tr><td colspan="2">補助国道</td></tr>`;
-                            }
-
-                            html += `</table>`;
-
-                            //                            html += `整理番号：${props.Rd_SortNo}<br>`;
-
+                            const html = generateInfoHTML(feature, sameRouteFeatures);
                             infoDiv.innerHTML = html;
+                            highlightRoutes(feature);
                         });
-                    },
-                    style: {
-                        color: 'blue',
-                        weight: 5
                     }
-                });
+                }).addTo(map);
 
-                geojsonLayer.addTo(map);
-
-                // ← ここで地物全体が表示されるようにズームと中心を調整
                 map.fitBounds(geojsonLayer.getBounds());
             });
-
     </script>
 </body>
 

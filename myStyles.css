@@ -24,7 +24,7 @@ body {
 @media screen and (max-width: 768px) {
     body {
         margin: 0;
-        overflow: auto;
+        overflow-y: auto;
     }
 
     .container {
@@ -37,7 +37,7 @@ body {
     }
 
     .content {
-        width: 100%;
+        width: auto;
         height: auto;
         overflow-y: visible;
     }
@@ -60,6 +60,12 @@ body {
 }
 
 /* テーブルデザイン */
+.table-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    margin-bottom: 1rem;
+}
 
 .design01 {
     border-collapse: collapse;

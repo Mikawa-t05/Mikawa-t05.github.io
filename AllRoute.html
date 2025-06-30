@@ -3,19 +3,75 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>一般国道 - 詳細情報 -</title>
+    <title>一般国道 - 路線簡易選択サイト -</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="myStyles.css">
     <style>
+        body {
+            overflow: hidden;
+            margin: 0;
+            height: 100%;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
         #map {
-            height: 500px;
+            width: 50%;
+            height: 100vh;
+        }
+
+        .content {
+            width: 50%;
+            height: 50vh;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            /* ← 縦並びにする */
+        }
+
+        .header {
+            flex: 0 0 auto;
+            /* 高さ固定 */
         }
 
         .table-wrapper {
-            max-height: 600px;
+            border: 3px solid #ccc;
             overflow-y: auto;
-            border: 1px solid #ccc;
+            flex: 1 1 auto;
+            /* 残りの高さを使ってスクロール可能に */
+            max-height: calc(100vh - 50px);
+            /* 必要に応じて調整 */
+        }
+
+
+        @media screen and (max-width: 768px) {
+
+            html,
+            body {
+                overflow: auto;
+                height: 100%;
+            }
+
+            .container {
+                display: block;
+                height: 100vh;
+            }
+
+            #map {
+                width: 100%;
+                height: 50%;
+                min-height: 200px;
+                /* ← 追加すると安定します */
+            }
+
+            .content {
+                width: auto;
+                height: auto;
+                overflow-y: auto;
+            }
         }
 
         table {
@@ -34,7 +90,10 @@
 <body>
     <div class="container">
         <div id="map"></div>
-        <div>
+        <div class="content">
+            <div class="header">
+                <h3 style="margin: 5px;">路線を選択</h3>
+            </div>
             <div class="table-wrapper">
                 <form id="routeForm">
                     <table>
@@ -103,21 +162,21 @@
                         </tr>
                         <tr>
                             <td><input type="checkbox" name="Nat'l_Route" value="9"> 9号 </td>
-                            <td><input type="checkbox" name="Nat'l_Route" value="109"> </td>
+                            <td></td>
                             <td><input type="checkbox" name="Nat'l_Route" value="209"> 209号 </td>
                             <td><input type="checkbox" name="Nat'l_Route" value="309"> 309号 </td>
                             <td><input type="checkbox" name="Nat'l_Route" value="409"> 409号 </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" name="Nat'l_Route" value="10"> 10号 </td>
-                            <td><input type="checkbox" name="Nat'l_Route" value="110"> </td>
+                            <td></td>
                             <td><input type="checkbox" name="Nat'l_Route" value="210"> 210号 </td>
                             <td><input type="checkbox" name="Nat'l_Route" value="310"> 310号 </td>
                             <td><input type="checkbox" name="Nat'l_Route" value="410"> 410号 </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" name="Nat'l_Route" value="11"> 11号 </td>
-                            <td><input type="checkbox" name="Nat'l_Route" value="111"> </td>
+                            <td></td>
                             <td><input type="checkbox" name="Nat'l_Route" value="211"> 211号 </td>
                             <td><input type="checkbox" name="Nat'l_Route" value="311"> 311号 </td>
                             <td><input type="checkbox" name="Nat'l_Route" value="411"> 411号 </td>
@@ -139,21 +198,21 @@
                         <tr>
                             <td><input type="checkbox" name="Nat'l_Route" value="14"> 14号 </td>
                             <td><input type="checkbox" name="Nat'l_Route" value="114"> 114号 </td>
-                            <td><input type="checkbox" name="Nat'l_Route" value="214"> </td>
+                            <td></td>
                             <td><input type="checkbox" name="Nat'l_Route" value="314"> 314号 </td>
                             <td><input type="checkbox" name="Nat'l_Route" value="414"> 414号 </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" name="Nat'l_Route" value="15"> 15号 </td>
                             <td><input type="checkbox" name="Nat'l_Route" value="115"> 115号 </td>
-                            <td><input type="checkbox" name="Nat'l_Route" value="215"> </td>
+                            <td></td>
                             <td><input type="checkbox" name="Nat'l_Route" value="315"> 315号 </td>
                             <td><input type="checkbox" name="Nat'l_Route" value="415"> 415号 </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" name="Nat'l_Route" value="16"> 16号 </td>
                             <td><input type="checkbox" name="Nat'l_Route" value="116"> 116号 </td>
-                            <td><input type="checkbox" name="Nat'l_Route" value="216"> </td>
+                            <td></td>
                             <td><input type="checkbox" name="Nat'l_Route" value="316"> 316号 </td>
                             <td><input type="checkbox" name="Nat'l_Route" value="416"> 416号 </td>
                         </tr>
@@ -808,6 +867,9 @@
             }
         });
     </script>
+
+
+
 </body>
 
 </html>

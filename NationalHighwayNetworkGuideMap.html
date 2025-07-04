@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全国国道網便覧マップ</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        .route-link {
+            display: block;
+            margin: 4px 0;
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .full-screen {
+            width: 100vw;
+            height: 100vh;
+            background-color: lightblue;
+            /* 任意の背景色 */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map" class="full-screen"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([35.684036, 139.774467], 15);
+
+        L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
+            maxZoom: 18,
+        }).addTo(map);
+
+        let allFeatures = [];
+        let geojsonLayer;
+
+fetch('route.geojson')
+    .then(res => res.json())
+    .then(data => {
+        allFeatures = data.features;
+
+        // 優先順位に従って並び替え
+        const sortedFeatures = allFeatures.slice().sort((a, b) => {
+            const getPriority = (f) => {
+                const isToll = f.properties.toll_road === 1;
+                const isDGH = f.properties.DGH_Route === 1;
+                if (isToll && isDGH) return 4; // 最前面：直管有料道路
+                if (isToll) return 3;          // 補助有料道路
+                if (isDGH) return 2;           // 直管国道
+                return 1;                      // 補助国道（最背面）
+            };
+            return getPriority(a) - getPriority(b);
+        });
+
+        geojsonLayer = L.geoJSON({ type: "FeatureCollection", features: sortedFeatures }, {
+            style: getStyle,
+            onEachFeature: (feature, layer) => {
+                layer.on('click', () => {
+                    const clickedCoords = JSON.stringify(feature.geometry.coordinates);
+
+                    const sameRouteFeatures = allFeatures.filter(f =>
+                        JSON.stringify(f.geometry.coordinates) === clickedCoords
+                    );
+
+                    sameRouteFeatures.sort((a, b) => a.properties.Rd_SortNo - b.properties.Rd_SortNo);
+
+                    let popupContent = '';
+                    if (sameRouteFeatures.length === 1) {
+                        const f = sameRouteFeatures[0];
+                        popupContent = generateInfoHTML(f);
+                        highlightRoutes(f);
+                    } else {
+                        const linksHTML = sameRouteFeatures.map((f, i) => {
+                            return `<a class="route-link" data-index="${i}">${f.properties.route_name}</a>`;
+                        }).join('');
+                        popupContent = `
+                          <div><strong>路線を選択：</strong></div>
+                          ${linksHTML}
+                          <div id="routeInfo">${generateInfoHTML(sameRouteFeatures[0])}</div>
+                        `;
+                        highlightRoutes(sameRouteFeatures[0]);
+
+                        setTimeout(() => {
+                            document.querySelectorAll('.route-link').forEach(link => {
+                                link.addEventListener('click', (e) => {
+                                    const index = e.target.getAttribute('data-index');
+                                    const selected = sameRouteFeatures[index];
+                                    document.getElementById('routeInfo').innerHTML = generateInfoHTML(selected);
+                                    highlightRoutes(selected);
+                                });
+                            });
+                        }, 100);
+                    }
+
+                    layer.bindPopup(popupContent).openPopup();
+                });
+            }
+        }).addTo(map);
+    });
+
+
+        function getStyle(feature) {
+            const isToll = feature.properties.toll_road === 1;
+            const isDGH = feature.properties.DGH_Route === 1;
+
+            if (isToll && isDGH) return { color: '#633F98', weight: 4 }; // 直管有料道路
+            if (isToll) return { color: '#B17CFF', weight: 3 };          // 補助有料道路
+            if (isDGH) return { color: '#EC1B24', weight: 3 };            // 直管国道
+            return { color: '#EA86B7', weight: 2 };                        // 補助国道
+        }
+
+
+        function generateInfoHTML(feature) {
+            const nickText = feature.properties.nick_name ? `${feature.properties.nick_name}` : '';
+            const tollText = feature.properties.toll_road === 1 ? '（有料道路）' : '';
+            const typeText = feature.properties.route_type ? `道路の種類：${feature.properties.route_type}` : '';
+            const Rd_adminText = feature.properties.DGH_Route === 1 ? '指定区間（直管国道）' : '指定区間外（補助国道）';
+            return `
+        <p><strong>路線名:</strong> ${feature.properties.route_name} ${nickText} ${tollText}</p>
+        <p>${typeText}</p>
+        <p>${Rd_adminText}</p>
+        <a href="Route${feature.properties.Rd_SortNo}.html" target="_blank">詳細情報</a>
+      `;
+        }
+
+        function highlightRoutes(selectedFeature) {
+            geojsonLayer.eachLayer(layer => {
+                const f = layer.feature;
+                if (JSON.stringify(f.geometry.coordinates) === JSON.stringify(selectedFeature.geometry.coordinates)) {
+                        layer.setStyle({ color: 'cyan', weight: 5 }); // 選択された地物
+                        layer.bringToFront();
+                } else {
+                    layer.setStyle(getStyle(f)); // 元の色に戻す
+                }
+            });
+        }
+
+
+    </script>
+</body>
+
+</html>

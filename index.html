@@ -4,133 +4,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全国国道網便覧マップ</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <title>全国国道網 - HUB</title>
+
     <style>
-        .route-link {
-            display: block;
-            margin: 4px 0;
-            cursor: pointer;
-            color: blue;
-            text-decoration: underline;
-        }
-
-        html,
         body {
-            margin: 0;
-            padding: 0;
+            background-color: skyblue;
+        }
+
+        .parent_class {
+            display: flex;
+        }
+
+        .img_box001 {
+            width: 300px;
+            height: 200px;
+            padding: 1em;
+            background-color: silver;
+            box-shadow: 0 12px 16px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px auto;
+        }
+
+        .img_box001:hover {
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        @media screen and (max-width: 768px) {
+            .parent_class {
+                display: block;
+            }
+
+            .img_box001 {
+                width: 300px;
+                height: 200px;
+                padding: 1em;
+                background-color: silver;
+                box-shadow: 0 3px 4px rgba(0, 0, 0, 0.32);
+                overflow: hidden;
+                display: block;
+                justify-content: center;
+                align-items: center;
+                margin: 10px auto;
+            }
+        }
+
+        .img_box001 img {
+            width: 100%;
             height: 100%;
+            object-fit: contain;
         }
-
-        .full-screen {
-            width: 100vw;
-            height: 100vh;
-            background-color: lightblue;
-            /* 任意の背景色 */
-        }
-
     </style>
 </head>
 
 <body>
-    <div id="map" class="full-screen"></div>
+    <h1>全国国道網 - HUB</h1>
+    <div class="parent_class">
+        <div style="margin: 1em;">
+            <h2>国道便覧帳</h2>
+            <a href="NationalHighwayNetworkGuideMap.html" style="display: block;">
+                <div class="img_box001">
+                    <img src="image_0001.png" alt="全国国道網便覧マップ">
+                </div>
+            </a>
+        </div>
+        <div style="margin: 1em;">
+            <h2>路線選択ツール</h2>
+            <a href="sample3.html" style="display: block;">
+                <div class="img_box001">
+                    <img src="image_0002.png" alt="路線選択ツール">
+                </div>
+            </a>
+        </div>
+    </div>
+    <a href="HowToUse.html">使い方はここをクリック！</a>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        const map = L.map('map').setView([35.684036, 139.774467], 15);
-
-        L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
-            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
-            maxZoom: 18,
-        }).addTo(map);
-
-        let allFeatures = [];
-        let geojsonLayer;
-
-        fetch('route.geojson')
-            .then(res => res.json())
-            .then(data => {
-                allFeatures = data.features;
-
-                geojsonLayer = L.geoJSON(data, {
-                    style: { color: 'blue', weight: 4 },
-                    onEachFeature: (feature, layer) => {
-                        layer.on('click', () => {
-                            const clickedCoords = JSON.stringify(feature.geometry.coordinates);
-
-                            const sameRouteFeatures = allFeatures.filter(f =>
-                                JSON.stringify(f.geometry.coordinates) === clickedCoords
-                            );
-
-                            sameRouteFeatures.sort((a, b) => a.properties.Rd_SortNo - b.properties.Rd_SortNo);
-
-                            let popupContent = '';
-                            if (sameRouteFeatures.length === 1) {
-                                const f = sameRouteFeatures[0];
-                                popupContent = generateInfoHTML(f);
-                                highlightRoutes(f);
-                            } else {
-                                const linksHTML = sameRouteFeatures.map((f, i) => {
-                                    return `<a class="route-link" data-index="${i}">${f.properties.route_name}</a>`;
-                                }).join('');
-                                popupContent = `
-                  <div><strong>路線を選択：</strong></div>
-                  ${linksHTML}
-                  <div id="routeInfo">${generateInfoHTML(sameRouteFeatures[0])}</div>
-                `;
-                                highlightRoutes(sameRouteFeatures[0]);
-
-                                setTimeout(() => {
-                                    document.querySelectorAll('.route-link').forEach(link => {
-                                        link.addEventListener('click', (e) => {
-                                            const index = e.target.getAttribute('data-index');
-                                            const selected = sameRouteFeatures[index];
-                                            document.getElementById('routeInfo').innerHTML = generateInfoHTML(selected);
-                                            highlightRoutes(selected);
-                                        });
-                                    });
-                                }, 100);
-                            }
-
-                            layer.bindPopup(popupContent).openPopup();
-                        });
-                    }
-                }).addTo(map);
-            });
-
-        function generateInfoHTML(feature) {
-            const nickText = feature.properties.nick_name ? `${feature.properties.nick_name}` : '';
-            const tollText = feature.properties.toll_road === 1 ? '（有料道路）' : '';
-            const typeText = feature.properties.route_type ? `道路の種類：${feature.properties.route_type}` : '';
-            const Rd_adminText = feature.properties.DGH_Route === 1 ? '指定区間（直管国道）' : '指定区間外（補助国道）';
-            return `
-        <p><strong>路線名:</strong> ${feature.properties.route_name} ${nickText} ${tollText}</p>
-        <p>${typeText}</p>
-        <p>${Rd_adminText}</p>
-        <a href="Route${feature.properties.Rd_SortNo}.html" target="_blank">詳細情報</a>
-      `;
-        }
-
-        function highlightRoutes(selectedFeature) {
-            geojsonLayer.eachLayer(layer => {
-                const f = layer.feature;
-                if (JSON.stringify(f.geometry.coordinates) === JSON.stringify(selectedFeature.geometry.coordinates)) {
-                    if (f.properties.route_name === selectedFeature.properties.route_name) {
-                        layer.setStyle({ color: '#ffff00', weight: 5 });
-                        layer.bringToFront();
-
-
-                    } else {
-                        layer.setStyle({ color: '#ff0000', weight: 3 });
-                        layer.bringToFront();
-                    }
-                } else {
-                    layer.setStyle({ color: 'blue', weight: 4 });
-                }
-            });
-        }
-
-    </script>
+    <h2>補足</h2>
+    <p>現在、国道１号、国道１４号、国道１６号、国道１３０号のみ、詳細情報が記載されています。その他の国道ページは存在しません</p>
 </body>
 
 </html>

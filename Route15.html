@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>一般国道１５号 - 詳細情報 -</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="myStyles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="map"  data-route-no="15">
+            <div id="info"><strong>属性情報</strong></div>
+        </div>
+        <div class="content">
+            <h2>国道１５号</h2>
+            <p>従来の東海道の一部に当たり、現在は第一京浜国道とも呼ばれる。東京・川崎・横浜間を連絡する一般国道</p>
+            <h3>一般国道の路線を指定する政令<a href="#001" class="small-ref">[1]</a>に基づく起終点</h3>
+
+
+            <table class="design01">
+                <tr>
+                    <th>起点</th>
+                    <th>終点</th>
+                    <th>重要な経由地</th>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">東京都中央区</td>
+                    <td style="text-align: center;">横浜市</td>
+                    <td>東京都港区（高輪二丁目）　同都品川区（北品川三丁目）　同都大田区（大森東一丁目）　川崎市（川崎区）
+                    </td>
+                </tr>
+            </table>
+            <h3>一般国道の指定区間を指定する政令<a href="#002" class="small-ref">[2]</a>に基づく指定区間</h3>
+            <p>東京都中央区日本橋から横浜市神奈川区栄町二番九まで
+            </p>
+
+            <h3>道路管理者（一般部）</h3>
+            <div class="table-scroll">
+                <table class="design01">
+                    <tr>
+                        <th>管理区分</th>
+                        <th colspan="2">管理者</th>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" style="text-align: center;">直管国道<br>（指定区間）</td>
+                        <td>起点～六郷橋北詰</td>
+                        <td><a href="https://www.ktr.mlit.go.jp/toukoku/toukoku00009.html">東京国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>六郷橋北詰～終点
+                        </td>
+                        <td><a href="https://www.ktr.mlit.go.jp/ktr_content/content/000798659.pdf">横浜国道事務所</a></td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>道路管理者（有料道路）</h3>
+            <p>（なし）</p>
+
+            <h3>出典</h3>
+            <ol>
+                <li><a href="https://laws.e-gov.go.jp/law/340CO0000000058" id="001">一般国道の路線を指定する政令</a> - 昭和四十年政令第五十八号 /
+                    平成16年4月1日改正</li>
+                <li><a href="https://laws.e-gov.go.jp/law/333CO0000000164" id="002">一般国道の指定区間を指定する政令</a> -
+                    昭和三十三年政令第百六十四号 /
+                    令和7年4月1日改正</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="route_product.js"></script>
+
+</body>
+
+</html>

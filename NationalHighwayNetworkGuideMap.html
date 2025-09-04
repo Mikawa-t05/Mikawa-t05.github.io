@@ -123,14 +123,16 @@ fetch('route.geojson')
 
 
         function generateInfoHTML(feature) {
-            const nickText = feature.properties.nick_name ? `${feature.properties.nick_name}` : '';
-            const tollText = feature.properties.toll_road === 1 ? '（有料道路）' : '';
-            const typeText = feature.properties.route_type ? `道路の種類：${feature.properties.route_type}` : '';
-            const Rd_adminText = feature.properties.DGH_Route === 1 ? '指定区間（直管国道）' : '指定区間外（補助国道）';
+            const tollText = feature.properties.toll_road === 1 ? '有料区間名　' : '通称名';
+            const nickText = feature.properties.nick_name ? `<tr><td>${tollText}</td><td>${feature.properties.nick_name}</td></tr>` : '';
+            const Rd_adminText = feature.properties.DGH_Route === 1 ? '直管国道' : '補助国道';
             return `
-        <p><strong>路線名:</strong> ${feature.properties.route_name} ${nickText} ${tollText}</p>
-        <p>${typeText}</p>
-        <p>${Rd_adminText}</p>
+        <table>
+        <tr><td><strong>路線名</strong></td><td>${feature.properties.route_name}</td><tr>
+        ${nickText}
+        <tr><td>道路の種類　</td><td>${feature.properties.route_type}</td></tr>
+        <tr><td></td><td>${Rd_adminText}</td></tr>
+        </table>
         <a href="Route${feature.properties.Rd_SortNo}.html" target="_blank">詳細情報</a>
       `;
         }

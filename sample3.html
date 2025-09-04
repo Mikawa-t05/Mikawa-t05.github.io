@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>一般国道 - 路線簡易選択サイト -</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            overflow: hidden;
+            margin: 0;
+            height: 100%;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        #map {
+            width: 50%;
+            height: 100vh;
+        }
+
+        .content {
+            width: 50%;
+            height: 50vh;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            /* ← 縦並びにする */
+        }
+
+        .header {
+            flex: 0 0 auto;
+            /* 高さ固定 */
+        }
+
+        .table-wrapper {
+            border: 3px solid #ccc;
+            overflow-y: auto;
+            flex: 1 1 auto;
+            /* 残りの高さを使ってスクロール可能に */
+            max-height: calc(100vh - 50px);
+            /* 必要に応じて調整 */
+        }
+
+
+        @media screen and (max-width: 768px) {
+
+            html,
+            body {
+                overflow: auto;
+                height: 100%;
+            }
+
+            .container {
+                display: block;
+                height: 100vh;
+            }
+
+            #map {
+                width: 100%;
+                height: 50%;
+                min-height: 200px;
+                /* ← 追加すると安定します */
+            }
+
+            .content {
+                width: auto;
+                height: auto;
+                overflow-y: auto;
+            }
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td,
+        th {
+            vertical-align: top;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="map"></div>
+        <div class="content">
+            <div class="header">
+                <h3 style="margin: 5px;">路線を選択</h3>
+            </div>
+            <div class="table-wrapper">
+                <form id="routeForm">
+                    <table>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="1"> 1号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="101"> 101号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="201"> 201号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="301"> 301号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="401"> 401号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="501"> 501号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="2"> 2号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="102"> 102号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="202"> 202号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="302"> 302号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="402"> 402号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="502"> 502号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="3"> 3号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="103"> 103号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="203"> 203号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="303"> 303号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="403"> 403号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="503"> 503号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="4"> 4号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="104"> 104号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="204"> 204号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="304"> 304号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="404"> 404号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="504"> 504号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="5"> 5号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="105"> 105号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="205"> 205号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="305"> 305号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="405"> 405号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="505"> 505号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="6"> 6号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="106"> 106号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="206"> 206号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="306"> 306号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="406"> 406号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="506"> 506号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="7"> 7号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="107"> 107号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="207"> 207号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="307"> 307号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="407"> 407号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="507"> 507号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="8"> 8号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="108"> 108号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="208"> 208号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="308"> 308号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="408"> 408号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="9"> 9号 </td>
+                            <td></td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="209"> 209号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="309"> 309号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="409"> 409号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="10"> 10号 </td>
+                            <td></td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="210"> 210号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="310"> 310号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="410"> 410号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="11"> 11号 </td>
+                            <td></td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="211"> 211号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="311"> 311号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="411"> 411号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="12"> 12号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="112"> 112号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="212"> 212号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="312"> 312号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="412"> 412号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="13"> 13号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="113"> 113号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="213"> 213号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="313"> 313号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="413"> 413号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="14"> 14号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="114"> 114号 </td>
+                            <td></td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="314"> 314号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="414"> 414号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="15"> 15号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="115"> 115号 </td>
+                            <td></td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="315"> 315号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="415"> 415号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="16"> 16号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="116"> 116号 </td>
+                            <td></td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="316"> 316号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="416"> 416号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="17"> 17号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="117"> 117号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="217"> 217号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="317"> 317号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="417"> 417号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="18"> 18号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="118"> 118号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="218"> 218号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="318"> 318号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="418"> 418号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="19"> 19号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="119"> 119号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="219"> 219号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="319"> 319号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="419"> 419号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="20"> 20号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="120"> 120号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="220"> 220号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="320"> 320号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="420"> 420号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="21"> 21号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="121"> 121号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="221"> 221号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="321"> 321号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="421"> 421号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="22"> 22号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="122"> 122号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="222"> 222号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="322"> 322号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="422"> 422号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="23"> 23号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="123"> 123号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="223"> 223号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="323"> 323号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="423"> 423号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="24"> 24号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="124"> 124号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="224"> 224号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="324"> 324号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="424"> 424号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="25"> 25号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="125"> 125号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="225"> 225号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="325"> 325号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="425"> 425号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="26"> 26号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="126"> 126号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="226"> 226号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="326"> 326号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="426"> 426号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="27"> 27号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="127"> 127号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="227"> 227号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="327"> 327号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="427"> 427号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="28"> 28号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="128"> 128号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="228"> 228号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="328"> 328号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="428"> 428号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="29"> 29号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="129"> 129号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="229"> 229号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="329"> 329号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="429"> 429号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="30"> 30号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="130"> 130号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="230"> 230号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="330"> 330号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="430"> 430号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="31"> 31号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="131"> 131号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="231"> 231号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="331"> 331号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="431"> 431号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="32"> 32号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="132"> 132号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="232"> 232号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="332"> 332号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="432"> 432号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="33"> 33号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="133"> 133号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="233"> 233号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="333"> 333号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="433"> 433号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="34"> 34号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="134"> 134号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="234"> 234号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="334"> 334号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="434"> 434号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="35"> 35号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="135"> 135号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="235"> 235号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="335"> 335号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="435"> 435号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="36"> 36号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="136"> 136号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="236"> 236号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="336"> 336号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="436"> 436号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="37"> 37号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="137"> 137号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="237"> 237号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="337"> 337号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="437"> 437号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="38"> 38号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="138"> 138号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="238"> 238号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="338"> 338号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="438"> 438号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="39"> 39号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="139"> 139号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="239"> 239号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="339"> 339号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="439"> 439号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="40"> 40号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="140"> 140号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="240"> 240号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="340"> 340号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="440"> 440号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="41"> 41号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="141"> 141号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="241"> 241号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="341"> 341号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="441"> 441号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="42"> 42号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="142"> 142号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="242"> 242号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="342"> 342号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="442"> 442号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="43"> 43号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="143"> 143号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="243"> 243号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="343"> 343号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="443"> 443号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="44"> 44号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="144"> 144号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="244"> 244号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="344"> 344号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="444"> 444号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="45"> 45号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="145"> 145号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="245"> 245号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="345"> 345号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="445"> 445号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="46"> 46号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="146"> 146号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="246"> 246号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="346"> 346号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="446"> 446号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="47"> 47号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="147"> 147号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="247"> 247号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="347"> 347号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="447"> 447号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="48"> 48号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="148"> 148号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="248"> 248号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="348"> 348号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="448"> 448号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="49"> 49号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="149"> 149号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="249"> 249号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="349"> 349号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="449"> 449号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="50"> 50号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="150"> 150号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="250"> 250号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="350"> 350号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="450"> 450号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="51"> 51号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="151"> 151号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="251"> 251号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="351"> 351号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="451"> 451号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="52"> 52号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="152"> 152号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="252"> 252号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="352"> 352号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="452"> 452号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="53"> 53号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="153"> 153号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="253"> 253号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="353"> 353号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="453"> 453号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="54"> 54号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="154"> 154号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="254"> 254号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="354"> 354号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="454"> 454号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="55"> 55号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="155"> 155号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="255"> 255号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="355"> 355号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="455"> 455号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="56"> 56号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="156"> 156号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="256"> 256号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="356"> 356号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="456"> 456号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="57"> 57号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="157"> 157号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="257"> 257号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="357"> 357号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="457"> 457号 </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="Nat'l_Route" value="58"> 58号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="158"> 158号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="258"> 258号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="358"> 358号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="458"> 458号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="159"> 159号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="259"> 259号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="359"> 359号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="459"> 459号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="160"> 160号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="260"> 260号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="360"> 360号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="460"> 460号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="161"> 161号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="261"> 261号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="361"> 361号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="461"> 461号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="162"> 162号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="262"> 262号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="362"> 362号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="462"> 462号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="163"> 163号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="263"> 263号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="363"> 363号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="463"> 463号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="164"> 164号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="264"> 264号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="364"> 364号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="464"> 464号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="165"> 165号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="265"> 265号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="365"> 365号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="465"> 465号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="166"> 166号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="266"> 266号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="366"> 366号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="466"> 466号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="167"> 167号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="267"> 267号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="367"> 367号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="467"> 467号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="168"> 168号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="268"> 268号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="368"> 368号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="468"> 468号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="169"> 169号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="269"> 269号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="369"> 369号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="469"> 469号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="170"> 170号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="270"> 270号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="370"> 370号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="470"> 470号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="171"> 171号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="271"> 271号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="371"> 371号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="471"> 471号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="172"> 172号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="272"> 272号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="372"> 372号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="472"> 472号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="173"> 173号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="273"> 273号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="373"> 373号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="473"> 473号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="174"> 174号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="274"> 274号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="374"> 374号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="474"> 474号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="175"> 175号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="275"> 275号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="375"> 375号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="475"> 475号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="176"> 176号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="276"> 276号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="376"> 376号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="476"> 476号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="177"> 177号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="277"> 277号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="377"> 377号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="477"> 477号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="178"> 178号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="278"> 278号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="378"> 378号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="478"> 478号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="179"> 179号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="279"> 279号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="379"> 379号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="479"> 479号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="180"> 180号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="280"> 280号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="380"> 380号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="480"> 480号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="181"> 181号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="281"> 281号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="381"> 381号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="481"> 481号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="182"> 182号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="282"> 282号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="382"> 382号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="482"> 482号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="183"> 183号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="283"> 283号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="383"> 383号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="483"> 483号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="184"> 184号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="284"> 284号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="384"> 384号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="484"> 484号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="185"> 185号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="285"> 285号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="385"> 385号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="485"> 485号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="186"> 186号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="286"> 286号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="386"> 386号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="486"> 486号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="187"> 187号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="287"> 287号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="387"> 387号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="487"> 487号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="188"> 188号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="288"> 288号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="388"> 388号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="488"> 488号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="189"> 189号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="289"> 289号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="389"> 389号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="489"> 489号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="190"> 190号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="290"> 290号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="390"> 390号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="490"> 490号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="191"> 191号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="291"> 291号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="391"> 391号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="491"> 491号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="192"> 192号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="292"> 292号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="392"> 392号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="492"> 492号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="193"> 193号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="293"> 293号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="393"> 393号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="493"> 493号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="194"> 194号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="294"> 294号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="394"> 394号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="494"> 494号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="195"> 195号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="295"> 295号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="395"> 395号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="495"> 495号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="196"> 196号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="296"> 296号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="396"> 396号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="496"> 496号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="197"> 197号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="297"> 297号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="397"> 397号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="497"> 497号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="198"> 198号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="298"> 298号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="398"> 398号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="498"> 498号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="199"> 199号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="299"> 299号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="399"> 399号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="499"> 499号 </td>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="200"> 200号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="300"> 300号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="400"> 400号 </td>
+                            <td><input type="checkbox" name="Nat'l_Route" value="500"> 500号 </td>
+                        </tr>
+
+                    </table>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([35.0, 137.0], 10);
+        let geojsonLayer;
+        let highlightLayer;
+
+        L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
+            maxZoom: 18,
+        }).addTo(map);
+
+        const infoDiv = document.getElementById('info');
+
+        let allFeatures = [];
+
+        fetch('route.geojson')
+            .then(response => response.json())
+            .then(data => {
+                allFeatures = data.features;
+
+                geojsonLayer = L.geoJSON(data, {
+                    style: {
+                        color: 'blue',
+                        weight: 3
+                    }
+                }).addTo(map);
+
+                map.fitBounds(geojsonLayer.getBounds());
+            });
+
+        document.getElementById('routeForm').addEventListener('change', () => {
+            const selectedValues = Array.from(document.querySelectorAll('input[name="Nat\'l_Route"]:checked'))
+                .map(cb => parseInt(cb.value));
+
+            if (highlightLayer) {
+                map.removeLayer(highlightLayer);
+            }
+
+            const filtered = {
+                type: "FeatureCollection",
+                features: allFeatures.filter(f => selectedValues.includes(f.properties.Rd_SortNo))
+            };
+
+            highlightLayer = L.geoJSON(filtered, {
+                style: {
+                    color: 'red',
+                    weight: 5
+                },
+            }).addTo(map);
+
+            if (filtered.features.length > 0) {
+                map.fitBounds(highlightLayer.getBounds());
+            }
+        });
+    </script>
+
+
+
+</body>
+
+</html>

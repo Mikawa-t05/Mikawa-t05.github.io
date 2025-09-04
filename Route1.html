@@ -11,10 +11,11 @@
 
 <body>
     <div class="container">
-        <div id="map">
+        <div id="map"  data-route-no="1">
             <div id="info"><strong>属性情報</strong></div>
         </div>
         <div class="content">
+            <img src="pic/R1.png" alt="国道１号" style="width: 128px; height: auto;">
             <h2>国道１号</h2>
             <p>従来の東海道と大阪街道からなる路線で、東京・日本橋を起点に置き、川崎や横浜、清水、静岡、浜松、名古屋、四日市、大津、京都といった重要都市を連絡しながら大阪・梅田新道に至る一般国道である。</p>
             <h3>一般国道の路線を指定する政令<a href="#001" class="small-ref">[1]</a>に基づく起終点</h3>
@@ -50,9 +51,10 @@
                         <td><a href="https://www.ktr.mlit.go.jp/toukoku/toukoku00009.html">東京国道事務所</a></td>
                     </tr>
                     <tr>
-                        <td>多摩川大橋北詰～横浜市保土ヶ谷区常盤台（横浜新道接続点）
+                        <td>多摩川大橋北詰～横浜市保土ヶ谷区常盤台（横浜新道 接続点）
                             <br>横浜市神奈川区東神奈川二丁目～横浜市西区浜松町（国道１６号交点）
-                            <br>横浜市戸塚区上矢部町（横浜新道接続点）～（戸塚道路）～（箱根新道）～神奈川県・静岡県境
+                            <br>横浜市戸塚区上矢部町（横浜新道 接続点）～神奈川県・静岡県境
+                            <br>（戸塚道路・箱根新道に並行する区間を除く）
                         </td>
                         <td><a href="https://www.ktr.mlit.go.jp/ktr_content/content/000798659.pdf">横浜国道事務所</a></td>
                     </tr>
@@ -100,14 +102,16 @@
                     <tr>
                         <td rowspan="2" style="text-align: center;">補助国道<br>（指定区間外）</td>
                         <td>横浜市西区浜松町（国道１６号交点）～戸塚区大坂上付近
-                            <br>横浜市戸塚区柏尾町～横浜市戸塚区上矢部町（横浜新道接続点）
+                            <br>横浜市戸塚区柏尾町～横浜市戸塚区上矢部町（横浜新道 接続点）
                         </td>
                         <td><a
                                 href="https://www.city.yokohama.lg.jp/kurashi/machizukuri-kankyo/doro/qa/shirabetai/012.html">横浜市</a>
                         </td>
                     </tr>
                     <tr>
-                        <td>小田原市風祭～神奈川県足柄下郡箱根町宮ノ下～神奈川県足柄下郡箱根町（箱根新道接続点）</td>
+                        <td>小田原市風祭～神奈川県足柄下郡箱根町宮ノ下～同町箱根（箱根新道 接続点）
+                            <br>（箱根新道に並行する区間）
+                        </td>
                         <td><a href="https://www.pref.kanagawa.jp/docs/n5h/cnt/f704/p8050.html">神奈川県</a></td>
                     </tr>
                 </table>
@@ -160,95 +164,7 @@
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        const map = L.map('map');
-        const targetRouteNo = 1; // ← 表示したい国道番号をここで設定
-
-        L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
-            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
-            maxZoom: 18,
-        }).addTo(map);
-
-        const infoDiv = document.getElementById('info');
-        let highlightLayer;
-        let allFeatures = [];
-
-        function generateInfoHTML(feature, duplicates = []) {
-            const props = feature.properties;
-            let html = `<strong>属性情報:</strong><br><table class="design01">`;
-            html += `<tr><td>道路の種類</td><td>${props.route_type}</td></tr>`;
-            html += `<tr><td>路線名</td><td>${props.route_name}</td></tr>`;
-
-            const isTollRoad = props.toll_road === 1;
-            const hasNickName = props.nick_name && props.nick_name.toUpperCase() !== "NULL";
-            const isDGH_Route = props.DGH_Route === 1;
-
-            if (!isTollRoad && hasNickName) {
-                html += `<tr><td>通称名</td><td>${props.nick_name}</td></tr>`;
-            }
-
-            if (isTollRoad && hasNickName) {
-                html += `<tr><td>有料道路名</td><td>${props.nick_name}</td></tr>`;
-            }
-
-            html += `<tr><td colspan="2">${isDGH_Route ? '直管国道' : '補助国道'}</td></tr>`;
-
-            if (duplicates.length > 1) {
-                const others = duplicates.filter(f => f !== feature);
-                const links = others.map(f => {
-                    const name = f.properties.route_name;
-                    const no = f.properties.Rd_SortNo;
-                    return `<a href="Route${no}.html" target="_blank">${name}</a>`;
-                }).join('<br>');
-                html += `<tr><td>重複路線</td><td>${links}</td></tr>`;
-            }
-
-            html += `</table>`;
-            return html;
-        }
-
-        function highlightRoutes(feature) {
-            if (highlightLayer) {
-                geojsonLayer.resetStyle(highlightLayer);
-            }
-            geojsonLayer.eachLayer(layer => {
-                if (layer.feature === feature) {
-                    highlightLayer = layer;
-                    layer.setStyle({ color: 'red', weight: 5 });
-                    layer.bringToFront();
-                }
-            });
-        }
-
-        let geojsonLayer;
-
-        fetch('route.geojson')
-            .then(res => res.json())
-            .then(data => {
-                allFeatures = data.features;
-
-                const filteredFeatures = allFeatures.filter(f => f.properties.Rd_SortNo === targetRouteNo);
-
-                geojsonLayer = L.geoJSON({ type: "FeatureCollection", features: filteredFeatures }, {
-                    style: { color: 'blue', weight: 4 },
-                    onEachFeature: (feature, layer) => {
-                        layer.on('click', () => {
-                            const clickedCoords = JSON.stringify(feature.geometry.coordinates);
-
-                            const sameRouteFeatures = allFeatures.filter(f =>
-                                JSON.stringify(f.geometry.coordinates) === clickedCoords
-                            );
-
-                            const html = generateInfoHTML(feature, sameRouteFeatures);
-                            infoDiv.innerHTML = html;
-                            highlightRoutes(feature);
-                        });
-                    }
-                }).addTo(map);
-
-                map.fitBounds(geojsonLayer.getBounds());
-            });
-    </script>
+    <script src="route_product.js"></script>
 
 </body>
 

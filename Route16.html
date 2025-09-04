@@ -11,7 +11,7 @@
 
 <body>
     <div class="container">
-        <div id="map">
+        <div id="map" data-route-no="16">
             <div id="info"><strong>属性情報</strong></div>
         </div>
         <div class="content">
@@ -47,7 +47,7 @@
                     <tr>
                         <td rowspan="4" style="text-align: center;">直管国道<br>（指定区間）</td>
                         <td>起点～町田市鶴間（国道２４６号交点）
-                            <br>横須賀市走水（海上区間接続点）～終点
+                            <br>横須賀市走水（海上区間 接続点）～終点
                         </td>
                         <td><a href="https://www.ktr.mlit.go.jp/ktr_content/content/000798659.pdf">横浜国道事務所</a></td>
                     </tr>
@@ -62,7 +62,7 @@
                         <td><a href="https://www.ktr.mlit.go.jp/oomiya/oomiya00071.html">大宮国道事務所</a></td>
                     </tr>
                     <tr>
-                        <td>埼玉県・千葉県境～富津市富津（海上区間接続点）</td>
+                        <td>埼玉県・千葉県境～富津市富津（海上区間 接続点）</td>
                         <td><a href="https://www.ktr.mlit.go.jp/chiba/chiba_index004.html">千葉国道事務所</a></td>
                     </tr>
                 </table>
@@ -88,7 +88,7 @@
                 </table>
             </div>
 
-            <h3>出典</h3>
+            <h3 class="reference">出典</h3>
             <ol>
                 <li><a href="https://laws.e-gov.go.jp/law/340CO0000000058" id="001">一般国道の路線を指定する政令</a> - 昭和四十年政令第五十八号 /
                     平成16年4月1日改正</li>
@@ -100,95 +100,7 @@
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script>
-        const map = L.map('map');
-        const targetRouteNo = 16; // ← 表示したい国道番号をここで設定
-
-        L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
-            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
-            maxZoom: 18,
-        }).addTo(map);
-
-        const infoDiv = document.getElementById('info');
-        let highlightLayer;
-        let allFeatures = [];
-
-        function generateInfoHTML(feature, duplicates = []) {
-            const props = feature.properties;
-            let html = `<strong>属性情報:</strong><br><table class="design01">`;
-            html += `<tr><td>道路の種類</td><td>${props.route_type}</td></tr>`;
-            html += `<tr><td>路線名</td><td>${props.route_name}</td></tr>`;
-
-            const isTollRoad = props.toll_road === 1;
-            const hasNickName = props.nick_name && props.nick_name.toUpperCase() !== "NULL";
-            const isDGH_Route = props.DGH_Route === 1;
-
-            if (!isTollRoad && hasNickName) {
-                html += `<tr><td>通称名</td><td>${props.nick_name}</td></tr>`;
-            }
-
-            if (isTollRoad && hasNickName) {
-                html += `<tr><td>有料道路名</td><td>${props.nick_name}</td></tr>`;
-            }
-
-            html += `<tr><td colspan="2">${isDGH_Route ? '直管国道' : '補助国道'}</td></tr>`;
-
-            if (duplicates.length > 1) {
-                const others = duplicates.filter(f => f !== feature);
-                const links = others.map(f => {
-                    const name = f.properties.route_name;
-                    const no = f.properties.Rd_SortNo;
-                    return `<a href="Route${no}.html" target="_blank">${name}</a>`;
-                }).join('<br>');
-                html += `<tr><td>重複区間</td><td>${links}</td></tr>`;
-            }
-
-            html += `</table>`;
-            return html;
-        }
-
-        function highlightRoutes(feature) {
-            if (highlightLayer) {
-                geojsonLayer.resetStyle(highlightLayer);
-            }
-            geojsonLayer.eachLayer(layer => {
-                if (layer.feature === feature) {
-                    highlightLayer = layer;
-                    layer.setStyle({ color: 'red', weight: 5 });
-                    layer.bringToFront();
-                }
-            });
-        }
-
-        let geojsonLayer;
-
-        fetch('route.geojson')
-            .then(res => res.json())
-            .then(data => {
-                allFeatures = data.features;
-
-                const filteredFeatures = allFeatures.filter(f => f.properties.Rd_SortNo === targetRouteNo);
-
-                geojsonLayer = L.geoJSON({ type: "FeatureCollection", features: filteredFeatures }, {
-                    style: { color: 'blue', weight: 4 },
-                    onEachFeature: (feature, layer) => {
-                        layer.on('click', () => {
-                            const clickedCoords = JSON.stringify(feature.geometry.coordinates);
-
-                            const sameRouteFeatures = allFeatures.filter(f =>
-                                JSON.stringify(f.geometry.coordinates) === clickedCoords
-                            );
-
-                            const html = generateInfoHTML(feature, sameRouteFeatures);
-                            infoDiv.innerHTML = html;
-                            highlightRoutes(feature);
-                        });
-                    }
-                }).addTo(map);
-
-                map.fitBounds(geojsonLayer.getBounds());
-            });
-    </script>
+    <script src="route_product.js"></script>
 </body>
 
 </html>

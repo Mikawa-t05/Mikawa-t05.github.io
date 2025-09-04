@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>一般国道２号 - 詳細情報 -</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="myStyles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="map" data-route-no="2">
+            <div id="info"><strong>属性情報</strong></div>
+        </div>
+        <div class="content">
+            <h2>国道２号</h2>
+            <p>西宮から下関までは従来の山陽道を踏襲する路線。大阪を起点におき、山陽地方の主要な都市を連絡しつつ、関門海峡を海底トンネルで超え北九州市の門司に至る一般国道である。</p>
+            <h3>一般国道の路線を指定する政令<a href="#001" class="small-ref">[1]</a>に基づく起終点</h3>
+
+
+            <table class="design01">
+                <tr>
+                    <th>起点</th>
+                    <th>終点</th>
+                    <th>重要な経由地</th>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">大阪市</td>
+                    <td style="text-align: center;">北九州市</td>
+                    <td>尼崎市（杭瀬本町）　西宮市（池田町）　芦屋市（清水町）　神戸市（灘区）　明石市　加古川市（加古川町寺家町　加古川町河原）　高砂市（阿弥陀町魚橋）　姫路市（本町　飾磨区三宅一丁目）　兵庫県揖保郡太子町　龍野市　相生市（池之内）　赤穂市（東有年）　備前市　岡山市　岡山県都窪郡早島町　倉敷市　笠岡市　福山市　尾道市　三原市（時貞町）　竹原市（西野町）　東広島市　広島県安芸郡海田町　広島市　廿日市市　大竹市　岩国市　山口県玖珂郡玖珂町　同郡周東町　下松市　徳山市（徳山）　新南陽市（福川）　防府市　山口市　同県吉敷郡小郡町　宇部市（吉見）　同県厚狭郡山陽町　下関市
+                    </td>
+                </tr>
+            </table>
+            <h3>一般国道の指定区間を指定する政令<a href="#002" class="small-ref">[2]</a>に基づく指定区間</h3>
+            <p>大阪市北区梅田一丁目三番から北九州市門司区老松町三番一まで（明石市立石一丁目四番一から同市魚住町清水字井桶田二千百四十九番一及び姫路市本町二百四十一番を経て兵庫県揖保郡太子町山田字美之路五百九十一番二まで、福山市神村町字伊勢山下六千番二から尾道市正徳町五百三十五番十七を経て同市福地町六百二十番一まで、同市正徳町五百三十五番十七から三原市糸崎八丁目百六十七番十六を経て同市糸崎八丁目二百六番二まで、東広島市八本松西三丁目二千百九十三番二から広島市安芸区瀬野一丁目八百五十九番一を経て広島県安芸郡海田町南大正町千二百七十番十八まで並びに同市西区庚午北一丁目四百十八番一から同市佐伯区海老園二丁目三百十番三を経て廿日市市地御前五丁目千九百二十九番二十一までを除く。）
+            </p>
+
+            <h3>道路管理者（一般部）</h3>
+            <div class="table-scroll">
+                <table class="design01">
+                    <tr>
+                        <th>管理区分</th>
+                        <th colspan="2">管理者</th>
+                    </tr>
+                    <tr>
+                        <td rowspan="8" style="text-align: center;">直管国道<br>（指定区間）</td>
+                        <td>起点～左門橋東詰</td>
+                        <td><a href="https://www.kkr.mlit.go.jp/osaka/prof/kanrikukan/">大阪国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>左門橋東詰～明石市立石一丁目（国道１７５号 接続点）
+                            <br>神戸西バイパス
+                        </td>
+                        <td><a href="https://www.kkr.mlit.go.jp/hyogo/introduction/project-map/index.html">兵庫国道事務所</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>兵庫県明石市魚住町清水（第二神明道路 接続点）～兵庫県赤穂郡上郡町梨ヶ原（船坂山隧道東側）
+                            <br>（加古川バイパス、姫路バイパスに並行する区間を除く）
+                        </td>
+                        <td><a href="https://www.kkr.mlit.go.jp/himeji/gaiyou/kanrikukan/index.html">姫路国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>兵庫県赤穂郡上郡町梨ヶ原（船坂山隧道東側）～岡山県・広島県境
+                            <br>玉島・笠岡道路
+                            <br>笹岡バイパス
+                        </td>
+                        <td><a
+                                href="https://www.cgr.mlit.go.jp/okakoku/plan/files/R6_douroijikannrikeikaku.pdf">岡山国道事務所</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>岡山県・広島県境～三原市・竹原市境
+                            <br>（松永道路・尾道バイパス・木原道路に並行する区間を除く）
+                        </td>
+                        <td><a href="https://www.cgr.mlit.go.jp/fukuyama/common/PDF/road/kannai3.pdf">福山河川国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>三原市・竹原市境～栄橋北詰</td>
+                        <td><a href="https://www.cgr.mlit.go.jp/hirokoku/roadway/pdf/R0604.pdf">広島国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>栄橋北詰～山口県下関市椋野町２丁目（関門トンネル 接続点）</td>
+                        <td><a href="https://www.cgr.mlit.go.jp/yamaguchi/index_douro.html">山口河川国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>北九州市門司区東門司１丁目（関門トンネル 接続点）～終点
+                        <td><a
+                                href="https://www.qsr.mlit.go.jp/kitakyu/data_files/250521_R7kannaizu_17.8mb-1.pdf">北九州国道事務所</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td rowspan="3" style="text-align: center;">補助国道<br>（指定区間外）</td>
+                        <td>明石市立石一丁目（国道１７５号 接続点）～兵庫県揖保郡太子町山田字美之路（太子東インター）
+                            <br>（加古川バイパス・姫路バイパスに並行する区間）
+                        </td>
+                        <td><a href="https://web.pref.hyogo.lg.jp/ks11/wd13_000000001.html">兵庫県</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>福山市神村町字伊勢山下（神村ランプ）～福山市福地町（福地インター）
+                            <br>福山市正徳町～三原市糸崎八丁目（糸崎ランプ）
+                            <br>（松永道路・尾道バイパス・木原道路に並行する区間）
+                            <br>東広島市八本松西三丁目～石仏橋南詰
+                            <br>広島市・安芸郡海田町境～同町南大正町
+                            <br>広島市・廿日市市境～廿日市市地御前五丁目（西広島バイパス 接続点）
+                        </td>
+                        <td><a href="https://www.pref.hiroshima.lg.jp/soshiki/97/douro-toiawase.html">広島県</a></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            石仏橋南詰～広島市・安芸郡海田町境
+                            <br>広島市西区庚午北一丁目～広島市・廿日市市境
+                        </td>
+                        <td><a href="https://www.city.hiroshima.lg.jp/faq/doro/1001639/1002497.html">広島市</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>道路管理者（有料道路）</h3>
+            <div class="table-scroll">
+                <table class="design01">
+                    <tr>
+                        <th>管理区分</th>
+                        <th colspan="2">管理者</th>
+                    </tr>
+                    <tr>
+                        <td rowspan="3" style="text-align: center;">指定区間国道</td>
+                        <td>第二神明道路</td>
+                        <td rowspan="3"><a
+                                href="https://www.w-nexco.co.jp/search/highway_guide/">西日本高速道路株式会社（NEXCO西日本）</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>第二神明道路北線</td>
+                    </tr>
+                    <tr>
+                        <td>関門トンネル</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>出典</h3>
+            <ol>
+                <li><a href="https://laws.e-gov.go.jp/law/340CO0000000058" id="001">一般国道の路線を指定する政令</a> - 昭和四十年政令第五十八号 /
+                    平成16年4月1日改正</li>
+                <li><a href="https://laws.e-gov.go.jp/law/333CO0000000164" id="002">一般国道の指定区間を指定する政令</a> -
+                    昭和三十三年政令第百六十四号 /
+                    令和7年4月1日改正</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="route_product.js"></script>
+
+
+</body>
+
+</html>

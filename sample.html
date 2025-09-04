@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>全国一般国道網</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 100vh;
+    }
+
+    #info {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+      background: white;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+      font-size: 14px;
+      max-width: 300px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+  <div id="info">地物をクリックすると詳細が表示されます</div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([35.684036, 139.774467], 15);
+
+    L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+      attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
+      maxZoom: 18,
+    }).addTo(map);
+
+    let allLayers = [];
+    let selectedName = null;
+    const infoDiv = document.getElementById('info');
+
+    fetch('route.geojson')
+      .then(response => response.json())
+      .then(data => {
+        L.geoJSON(data, {
+          style: function () {
+            return {
+              color: "#3388ff",
+              weight: 3
+            };
+          },
+          onEachFeature: function (feature, layer) {
+            allLayers.push({ layer: layer, name: feature.properties.route_name });
+
+            // クリックイベント
+            layer.on('click', function () {
+              const clickedName = feature.properties.route_name;
+
+              if (selectedName === clickedName) {
+                // 解除
+                allLayers.forEach(obj => {
+                  obj.layer.setStyle({ color: "#3388ff" });
+                });
+                infoDiv.innerHTML = "地物をクリックすると詳細が表示されます";
+                selectedName = null;
+              } else {
+                // 選択
+                allLayers.forEach(obj => {
+                  const isMatch = obj.name === clickedName;
+                  obj.layer.setStyle({ color: isMatch ? "#ff0000" : "#3388ff" });
+                  if (isMatch) {
+                    obj.layer.bringToFront(); // ← ここで最前面に移動
+                  }
+                });
+                layer.setStyle({ color: clickedName ? "#faf500" : "3388ff" });
+
+                // 詳細情報を表示
+                let html = `<b>${clickedName}</b><br/><br/>`;
+                for (const key in feature.properties) {
+                  html += `${key}: ${feature.properties[key]}<br/>`;
+                }
+                infoDiv.innerHTML = html;
+
+                selectedName = clickedName;
+              }
+            });
+          }
+        }).addTo(map);
+      })
+      .catch(error => {
+        console.error('GeoJSONの読み込みに失敗しました:', error);
+      });
+  </script>
+</body>
+
+</html>

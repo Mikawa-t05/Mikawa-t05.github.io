@@ -47,6 +47,23 @@ function generateInfoHTML(feature, duplicates = []) {
     return html;
 }
 
+
+document.querySelectorAll('.small-ref').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const targetId = this.getAttribute('href').substring(1);
+    const targetElement = document.getElementById(targetId);
+    const scrollContainer = document.querySelector('.content');
+
+    if (targetElement && scrollContainer) {
+      scrollContainer.scrollTo({
+        top: targetElement.offsetTop,
+        behavior: 'smooth'
+      });
+    }
+  });
+});
+
 function highlightRoutes(feature) {
     if (highlightLayer) {
         geojsonLayers.forEach(layerGroup => {

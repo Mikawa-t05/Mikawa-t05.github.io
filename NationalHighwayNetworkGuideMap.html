@@ -55,7 +55,7 @@
 
         // 背景レイヤー定義
         const layers = {
-            pale: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+            pale: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
                 attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
                 maxZoom: 18,
             }),
@@ -178,7 +178,6 @@
         <tr><td>延長※</td><td>約 ${length} m</td></tr>
         </table>
         <a href="Route${feature.properties.Rd_SortNo}.html">詳細情報</a>
-        <p>※延長はあくまで目安であり、実際の測量に基づいたものではない点に留意してください。</p>
       `;
         }
 

@@ -36,6 +36,7 @@
     <select id="layerSelector" style="position: absolute; z-index: 1000; top: 10px; right: 10px;">
         <option value="pale">淡色地図</option>
         <option value="white">白地図</option>
+        <option value="picture">航空写真</option>
     </select>
 
     <select id="routeTypeSelector" style="position: absolute; z-index: 1000; top: 35px; right: 10px;">
@@ -55,14 +56,18 @@
 
         // 背景レイヤー定義
         const layers = {
-            pale: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+            pale: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
                 attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
-                maxZoom: 18,
+                maxZoom: 16,
             }),
             white: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png', {
                 attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
+                maxZoom: 14,
+            }),
+            picture: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
+                attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
                 maxZoom: 18,
-            })
+            }),
         };
 
         // 初期レイヤー追加

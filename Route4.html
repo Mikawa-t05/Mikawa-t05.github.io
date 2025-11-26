@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>一般国道４号 - 詳細情報 -</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="myStyles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="map"  data-route-no="4">
+            <div id="info"><strong>属性情報</strong></div>
+        </div>
+        <div class="content">
+            <img src="pic/R4.png" alt="国道４号" style="width: 128px; height: auto;">
+            <h2>国道４号</h2>
+            <p>従来の奥州街道を踏襲し、関東や東北の内陸部を縦貫するように宇都宮や郡山、福島、仙台、盛岡といった重要都市を連絡しながら青森に至る一般国道である。</p>
+            <h3>一般国道の路線を指定する政令<a href="#001" class="small-ref">[1]</a>に基づく起終点</h3>
+
+
+            <table class="design01">
+                <tr>
+                    <th>起点</th>
+                    <th>終点</th>
+                    <th>重要な経由地</th>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">東京都中央区</td>
+                    <td style="text-align: center;">青森市</td>
+                    <td>東京都千代田区（岩本町三丁目）　同都台東区（入谷一丁目）　同都荒川区　同都足立区　草加市　越谷市　春日部市　埼玉県北葛飾郡庄和町　幸手市　同郡栗橋町　茨城県猿島郡五霞村　古河市　同郡総和町　同郡三和町　小山市　結城市　栃木県下都賀郡石橋町　同県河内郡上三川町　宇都宮市　同県塩谷郡高根沢町　同郡氏家町　矢板市　大田原市　同県那須郡西那須野町　黒磯市　白河市　須賀川市　郡山市　二本松市　福島市　福島県伊達郡伊達町　白石市　宮城県柴田郡柴田町　岩沼市　名取市　仙台市（宮城野区）　古川市　同県栗原郡築館町　一関市　水沢市　北上市（有田町）　花巻市（山の神）　盛岡市　岩手県岩手郡滝沢村　同郡岩手町　二戸市　青森県三戸郡三戸町　同郡名川町　同郡五戸町　十和田市　同県上北郡七戸町　同郡野辺地町
+                    </td>
+                </tr>
+            </table>
+            <h3>一般国道の指定区間を指定する政令<a href="#002" class="small-ref">[2]</a>に基づく指定区間</h3>
+            <p>東京都中央区日本橋から青森市長島二丁目十番二まで
+            </p>
+
+            <h3>道路管理者（一般部）</h3>
+            <div class="table-scroll">
+                <table class="design01">
+                    <tr>
+                        <th>管理区分</th>
+                        <th colspan="2">管理者</th>
+                    </tr>
+                    <tr>
+                        <td rowspan="10" style="text-align: center;">直管国道<br>（指定区間）</td>
+                        <td>起点～毛長堀橋南詰</td>
+                        <td><a href="https://www.ktr.mlit.go.jp/toukoku/toukoku00009.html" target="_blank" rel="noopener noreferrer">東京国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>毛長堀橋南詰～利根川橋南詰
+                            <br>（新４号国道）越谷市大字下間久里字前田～埼玉県・茨城県境
+                        </td>
+                        <td><a href="https://www.ktr.mlit.go.jp/oomiya/oomiya00071.html" target="_blank" rel="noopener noreferrer">大宮国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>利根川橋南詰～栃福橋北詰
+                            <br>（新４号国道）埼玉県・茨城県境～栃木県宇都宮市平出工業団地
+                        </td>
+                        <td><a href="https://www.ktr.mlit.go.jp/utunomiya/utunomiya_office002.html" target="_blank" rel="noopener noreferrer">宇都宮国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>栃福橋北詰～日本（ひもと）橋北詰</td>
+                        <td><a href="https://www.thr.mlit.go.jp/koriyama/officeinfo/place/annai.html" target="_blank" rel="noopener noreferrer">郡山国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>日本橋北詰～福島県・宮城県境</td>
+                        <td><a href="https://www.thr.mlit.go.jp/fukushima/antenna/michi_001_map.html" target="_blank" rel="noopener noreferrer">福島河川国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>福島県・宮城県境～宮城県・岩手県境</td>
+                        <td><a href="https://www.thr.mlit.go.jp/sendai/jimusyo/jigyou/index.html" target="_blank" rel="noopener noreferrer">仙台河川国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>宮城県・岩手県境～岩手県・青森県境（青岩大橋）</td>
+                        <td><a href="https://www.thr.mlit.go.jp/iwate/jimusho/annai/map/index.htm" target="_blank" rel="noopener noreferrer">岩手河川国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>岩手県・青森県境（青岩大橋）～終点</td>
+                        <td><a href="https://www.thr.mlit.go.jp/aomori/outline/history/section.html" target="_blank" rel="noopener noreferrer">青森河川国道事務所</a></td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>道路管理者（有料道路）</h3>
+            <p>（なし）</p>
+
+            <h3>出典</h3>
+            <ol>
+                <li><a href="https://laws.e-gov.go.jp/law/340CO0000000058" id="001" target="_blank" rel="noopener noreferrer">一般国道の路線を指定する政令</a> - 昭和四十年政令第五十八号 /
+                    平成16年4月1日改正</li>
+                <li><a href="https://laws.e-gov.go.jp/law/333CO0000000164" id="002" target="_blank" rel="noopener noreferrer">一般国道の指定区間を指定する政令</a> -
+                    昭和三十三年政令第百六十四号 /
+                    令和7年4月1日改正</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="route_product.js"></script>
+
+</body>
+
+</html>

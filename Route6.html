@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>一般国道６号 - 詳細情報 -</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="myStyles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="map"  data-route-no="6">
+            <div id="info"><strong>属性情報</strong></div>
+        </div>
+        <div class="content">
+            <img src="pic/R6.png" alt="国道６号" style="width: 128px; height: auto;">
+            <h2>国道６号</h2>
+            <p>東京～仙台間を国道４号は内陸部を縦貫するのに対し、この国道は茨城県の主要都市を経由しながら福島県の浜通りを北上し、宮城県へと至る国道である。</p>
+            <h3>一般国道の路線を指定する政令<a href="#001" class="small-ref">[1]</a>に基づく起終点</h3>
+
+
+            <table class="design01">
+                <tr>
+                    <th>起点</th>
+                    <th>終点</th>
+                    <th>重要な経由地</th>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">東京都中央区</td>
+                    <td style="text-align: center;">仙台市</td>
+                    <td>東京都台東区（花川戸一丁目）　同都墨田区（向島二丁目）　同都葛飾区（金町四丁目）　松戸市　柏市　我孫子市　取手市　龍ケ崎市　牛久市　土浦市　石岡市　水戸市　勝田市（田彦）　日立市　高萩市　北茨城市　いわき市（泉町）　福島県双葉郡双葉町　同郡浪江町　原町市　相馬市　岩沼市　名取市
+                    </td>
+                </tr>
+            </table>
+            <h3>一般国道の指定区間を指定する政令<a href="#002" class="small-ref">[2]</a>に基づく指定区間</h3>
+            <p>東京都中央区日本橋から仙台市宮城野区日の出町二丁目三番二十七まで
+            </p>
+
+            <h3>道路管理者（一般部）</h3>
+            <div class="table-scroll">
+                <table class="design01">
+                    <tr>
+                        <th>管理区分</th>
+                        <th colspan="2">管理者</th>
+                    </tr>
+                    <tr>
+                        <td rowspan="10" style="text-align: center;">直管国道<br>（指定区間）</td>
+                        <td>起点～新葛飾橋西詰</td>
+                        <td><a href="https://www.ktr.mlit.go.jp/toukoku/toukoku00009.html" target="_blank" rel="noopener noreferrer">東京国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>新葛飾橋西詰～大利根橋南詰
+                        </td>
+                        <td><a href="https://www.ktr.mlit.go.jp/oomiya/oomiya00071.html" target="_blank" rel="noopener noreferrer">千葉国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>大利根橋南詰～茨城県・福島県境</td>
+                        <td><a href="https://www.ktr.mlit.go.jp/hitachi/hitachi00008.html" target="_blank" rel="noopener noreferrer">常陸河川国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>茨城県・福島県境～福島県・宮城県境</td>
+                        <td><a href="https://www.thr.mlit.go.jp/iwaki////jigyo/dourokanri2/index.html" target="_blank" rel="noopener noreferrer">磐城国道事務所</a></td>
+                    </tr>
+                    <tr>
+                        <td>福島県・宮城県境～終点</td>
+                        <td><a href="https://www.thr.mlit.go.jp/sendai/jimusyo/jigyou/index.html" target="_blank" rel="noopener noreferrer">仙台河川国道事務所</a></td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>道路管理者（有料道路）</h3>
+            <div class="table-scroll">
+                <table class="design01">
+                    <tr>
+                        <th>管理区分</th>
+                        <th colspan="2">管理者</th>
+                    </tr>
+                    <tr>
+                        <td rowspan="3" style="text-align: center;">指定区間国道</td>
+                        <td>東水戸道路</td>
+                        <td rowspan="3">
+                            <a
+                                href="https://www.e-nexco.co.jp/company/overview/business_field/" target="_blank" rel="noopener noreferrer">東日本高速道路株式会社（NEXCO東日本）</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>仙台東部道路</td>
+                    </tr>
+                    <tr>
+                        <td>仙台南部道路</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>出典</h3>
+            <ol>
+                <li><a href="https://laws.e-gov.go.jp/law/340CO0000000058" id="001" target="_blank" rel="noopener noreferrer">一般国道の路線を指定する政令</a> - 昭和四十年政令第五十八号 /
+                    平成16年4月1日改正</li>
+                <li><a href="https://laws.e-gov.go.jp/law/333CO0000000164" id="002" target="_blank" rel="noopener noreferrer">一般国道の指定区間を指定する政令</a> -
+                    昭和三十三年政令第百六十四号 /
+                    令和7年4月1日改正</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="route_product.js"></script>
+
+</body>
+
+</html>

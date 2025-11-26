@@ -26,55 +26,51 @@
             width: 100vw;
             height: 100vh;
             background-color: lightblue;
-            /* 任意の背景色 */
         }
     </style>
 </head>
 
-
 <body>
+    <!-- 背景レイヤー切り替え -->
     <select id="layerSelector" style="position: absolute; z-index: 1000; top: 10px; right: 10px;">
         <option value="pale">淡色地図</option>
         <option value="white">白地図</option>
         <option value="picture">航空写真</option>
     </select>
 
+    <!-- 路線種別切り替え -->
     <select id="routeTypeSelector" style="position: absolute; z-index: 1000; top: 35px; right: 10px;">
         <option value="all">全て</option>
+        <option value="expwyOnly">自動車専用道路のみ</option>
+        <option value="notExpwy">一般道のみ</option>
         <option value="tollOnly">有料のみ</option>
         <option value="nonToll">有料以外</option>
         <option value="dghOnly">直管国道のみ</option>
         <option value="subsidOnly">補助国道のみ</option>
     </select>
 
-
     <div id="map" class="full-screen"></div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        const map = L.map('map').setView([35.684036, 139.774467], 15);
+
+const map = L.map('map').setView([35.684036, 139.774467], 15);
 
         // 背景レイヤー定義
         const layers = {
             pale: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
-                attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
+                attribution: "<a href='https://maps.gsi.go.jp/development/ichiranイル</a>",
                 maxZoom: 16,
             }),
             white: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png', {
-                attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
-                maxZoom: 14,
-            }),
-            picture: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
-                attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
-                maxZoom: 18,
+                attribution: "https://maps.gsi.go.jp/development/ichiran.html地理院タイル</a>",
             }),
         };
 
-        // 初期レイヤー追加
         layers.pale.addTo(map);
         let currentLayer = layers.pale;
 
-        // セレクトボックスでレイヤー切り替え
+        // 背景レイヤー切り替えイベント
         document.getElementById('layerSelector').addEventListener('change', function () {
             const selected = this.value;
             if (layers[selected]) {
@@ -84,151 +80,40 @@
             }
         });
 
-
-        L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
-            attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
-            maxZoom: 18,
-        }).addTo(map);
-
-        let allFeatures = [];
+        // ▼ここから地物読み込み（イベント外）
         let geojsonLayer;
+        let outlineLayer;
+        letFeatures = [];
 
         fetch('route.geojson')
             .then(res => res.json())
             .then(data => {
                 allFeatures = data.features;
-
-                // 優先順位に従って並び替え
-                const sortedFeatures = allFeatures.slice().sort((a, b) => {
-                    const getPriority = (f) => {
-                        const isToll = f.properties.toll_road === 1;
-                        const isDGH = f.properties.DGH_Route === 1;
-                        if (isToll && isDGH) return 4; // 最前面：直管有料道路
-                        if (isToll) return 3;          // 補助有料道路
-                        if (isDGH) return 2;           // 直管国道
-                        return 1;                      // 補助国道（最背面）
-                    };
-                    return getPriority(a) - getPriority(b);
-                });
-
-                geojsonLayer = L.geoJSON({ type: "FeatureCollection", features: sortedFeatures }, {
-                    style: getStyle,
-                    onEachFeature: (feature, layer) => {
-                        layer.on('click', () => {
-                            const clickedCoords = JSON.stringify(feature.geometry.coordinates);
-
-                            const sameRouteFeatures = allFeatures.filter(f =>
-                                JSON.stringify(f.geometry.coordinates) === clickedCoords
-                            );
-
-                            sameRouteFeatures.sort((a, b) => a.properties.Rd_SortNo - b.properties.Rd_SortNo);
-
-                            let popupContent = '';
-                            if (sameRouteFeatures.length === 1) {
-                                const f = sameRouteFeatures[0];
-                                popupContent = generateInfoHTML(f);
-                                highlightRoutes(f);
-                            } else {
-                                const linksHTML = sameRouteFeatures.map((f, i) => {
-                                    return `<a class="route-link" data-index="${i}">${f.properties.route_name}</a>`;
-                                }).join('');
-                                popupContent = `
-                          <div><strong>路線を選択：</strong></div>
-                          ${linksHTML}
-                          <div id="routeInfo">${generateInfoHTML(sameRouteFeatures[0])}</div>
-                        `;
-                                highlightRoutes(sameRouteFeatures[0]);
-
-                                setTimeout(() => {
-                                    document.querySelectorAll('.route-link').forEach(link => {
-                                        link.addEventListener('click', (e) => {
-                                            const index = e.target.getAttribute('data-index');
-                                            const selected = sameRouteFeatures[index];
-                                            document.getElementById('routeInfo').innerHTML = generateInfoHTML(selected);
-                                            highlightRoutes(selected);
-                                        });
-                                    });
-                                }, 100);
-                            }
-
-                            layer.bindPopup(popupContent).openPopup();
-                        });
-                    }
-                }).addTo(map);
+                updateGeoJsonLayer(allFeatures); // 初期表示
             });
-
 
         function getStyle(feature) {
             const isToll = feature.properties.toll_road === 1;
             const isDGH = feature.properties.DGH_Route === 1;
 
-            if (isToll && isDGH) return { color: '#633F98', weight: 4 }; // 直管有料道路
-            if (isToll) return { color: '#B17CFF', weight: 3 };          // 補助有料道路
-            if (isDGH) return { color: '#EC1B24', weight: 3 };            // 直管国道
-            return { color: '#EA86B7', weight: 2 };                        // 補助国道
+            if (isToll && isDGH) return { color: '#8856D0', weight: 4 };
+            if (isToll) return { color: '#B17CFF', weight: 3 };
+            if (isDGH) return { color: '#EC1B24', weight: 3 };
+            return { color: '#EA86B7', weight: 2 };
         }
 
-
-        function generateInfoHTML(feature) {
-            const tollText = feature.properties.toll_road === 1 ? '有料区間名　' : '通称名';
-            const nickText = feature.properties.nick_name ? `<tr><td>${tollText}</td><td>${feature.properties.nick_name}</td></tr>` : '';
-            const Rd_adminText = feature.properties.DGH_Route === 1 ? '直管国道' : '補助国道';
-            const length = feature.properties.length;
-            return `
-        <table>
-        <tr><td><strong>路線名</strong></td><td>${feature.properties.route_name}</td><tr>
-        ${nickText}
-        <tr><td>道路の種類　</td><td>${feature.properties.route_type}</td></tr>
-        <tr><td></td><td>${Rd_adminText}</td></tr>
-        <tr><td>延長※</td><td>約 ${length} m</td></tr>
-        </table>
-        <a href="Route${feature.properties.Rd_SortNo}.html">詳細情報</a>
-      `;
-        }
-
-        function highlightRoutes(selectedFeature) {
-            geojsonLayer.eachLayer(layer => {
-                const f = layer.feature;
-                if (JSON.stringify(f.geometry.coordinates) === JSON.stringify(selectedFeature.geometry.coordinates)) {
-                    layer.setStyle({ color: 'cyan', weight: 5 }); // 選択された地物
-                    layer.bringToFront();
-                } else {
-                    layer.setStyle(getStyle(f)); // 元の色に戻す
-                }
-            });
-        }
-
-        document.getElementById('routeTypeSelector').addEventListener('change', function () {
-            const selectedType = this.value;
-            const filtered = filterFeaturesByType(selectedType);
-            updateGeoJsonLayer(filtered);
-        });
-
-        function filterFeaturesByType(type) {
-            return allFeatures.filter(f => {
-                const isToll = f.properties.toll_road === 1;
-                const isDGH = f.properties.DGH_Route === 1;
-
-                switch (type) {
-                    case 'tollOnly':
-                        return isToll;
-                    case 'nonToll':
-                        return !isToll;
-                    case 'dghOnly':
-                        return isDGH;
-                    case 'subsidOnly':
-                        return !isDGH;
-                    case 'all':
-                    default:
-                        return true;
-                }
-            });
+        // 輪郭線スタイル（expwy=1のみ）
+        function getOutlineStyle(feature) {
+            if (feature.properties.expwy === 1) {
+                const isDGH = feature.properties.DGH_Route === 1;
+                return { color: 'black', weight: isDGH ? 7 : 6, opacity: 1 };
+            }
+            return { opacity: 0 };
         }
 
         function updateGeoJsonLayer(features) {
-            if (geojsonLayer) {
-                map.removeLayer(geojsonLayer);
-            }
+            if (geojsonLayer) map.removeLayer(geojsonLayer);
+            if (outlineLayer) map.removeLayer(outlineLayer);
 
             const sortedFeatures = features.slice().sort((a, b) => {
                 const getPriority = (f) => {
@@ -242,17 +127,18 @@
                 return getPriority(a) - getPriority(b);
             });
 
+            outlineLayer = L.geoJSON({ type: "FeatureCollection", features: sortedFeatures }, {
+                style: getOutlineStyle
+            }).addTo(map);
+
             geojsonLayer = L.geoJSON({ type: "FeatureCollection", features: sortedFeatures }, {
                 style: getStyle,
                 onEachFeature: (feature, layer) => {
-                    // 既存のクリックイベント処理をここに再利用
                     layer.on('click', () => {
                         const clickedCoords = JSON.stringify(feature.geometry.coordinates);
-
                         const sameRouteFeatures = allFeatures.filter(f =>
                             JSON.stringify(f.geometry.coordinates) === clickedCoords
                         );
-
                         sameRouteFeatures.sort((a, b) => a.properties.Rd_SortNo - b.properties.Rd_SortNo);
 
                         let popupContent = '';
@@ -265,10 +151,10 @@
                                 return `<a class="route-link" data-index="${i}">${f.properties.route_name}</a>`;
                             }).join('');
                             popupContent = `
-                          <div><strong>路線を選択：</strong></div>
-                          ${linksHTML}
-                          <div id="routeInfo">${generateInfoHTML(sameRouteFeatures[0])}</div>
-                        `;
+                              <div><strong>路線を選択：</strong></div>
+                              ${linksHTML}
+                              <div id="routeInfo">${generateInfoHTML(sameRouteFeatures[0])}</div>
+                            `;
                             highlightRoutes(sameRouteFeatures[0]);
 
                             setTimeout(() => {
@@ -289,24 +175,143 @@
             }).addTo(map);
         }
 
+        function generateInfoHTML(feature) {
+            const tollText = feature.properties.toll_road === 1 ? '有料区間名　' : '通称名';
+            const nickText = feature.properties.nick_name ? `<tr><td>${tollText}</td><td>${feature.properties.nick_name}</td></tr>` : '';
+            const Rd_adminText = feature.properties.DGH_Route === 1 ? '指定区間' : '指定区間外';
+            const expwyText = feature.properties.expwy === 1 ? '(自動車専用道路)':'';
+            const length = feature.properties.length;
+            return `
+                <table>
+                <tr><td><strong>路線名</strong></td><td>${feature.properties.route_name}</td><tr>
+                ${nickText}
+                <tr><td>道路の種類　</td><td>${feature.properties.route_type} ${expwyText}</td></tr>
+                <tr><td></td><td>${Rd_adminText}</td></tr>
+                <tr><td>延長※</td><td>約 ${length} m</td></tr>
+                </table>
+                <a herf="Route${feature.properties.Rd_SortNo}.html">詳細情報</a>
+            `;
+        }
+
+        function highlightRoutes(selectedFeature) {
+            geojsonLayer.eachLayer(layer => {
+                const f = layer.feature;
+                if (JSON.stringify(f.geometry.coordinates) === JSON.stringify(selectedFeature.geometry.coordinates)) {
+                    layer.setStyle({ color: 'cyan', weight: 5 });
+                    layer.bringToFront();
+                } else {
+                    layer.setStyle(getStyle(f));
+                }
+            });
+        }
+
+        document.getElementById('routeTypeSelector').addEventListener('change', function () {
+            const selectedType = this.value;
+            const filtered = filterFeaturesByType(selectedType);
+            updateGeoJsonLayer(filtered);
+        });
+
+        function filterFeaturesByType(type) {
+            return allFeatures.filter(f => {
+                const isToll = f.properties.toll_road === 1;
+                const isDGH = f.properties.DGH_Route === 1;
+                const isExpwy = f.properties.expwy === 1;
+
+                switch (type) {
+                    case 'tollOnly': return isToll;
+                    case 'nonToll': return !isToll;
+                    case 'dghOnly': return isDGH;
+                    case 'subsidOnly': return !isDGH;
+                    case 'expwyOnly': return isExpwy;
+                    case 'notExpwy': return !isExpwy;
+                    case 'all':
+                    default: return true;
+                }
+            });
+        }
+
+        // 凡例
         const legend = L.control({ position: 'bottomright' });
-
         legend.onAdd = function (map) {
-            const div = L.DomUtil.create('div', 'info legend');
-            div.style.background = 'white';
-            div.style.padding = '10px';
-            div.style.border = '1px solid #ccc';
-            div.innerHTML += '<strong>路線種別凡例</strong><br>';
-            div.innerHTML += '<div style="border-top: 4px solid #633F98; margin: 4px 0;">直管国道(有料)</div>';
-            div.innerHTML += '<div style="border-top: 3px solid #B17CFF; margin: 4px 0;">補助国道(有料)</div>';
-            div.innerHTML += '<div style="border-top: 3px solid #EC1B24; margin: 4px 0;">直管国道</div>';
-            div.innerHTML += '<div style="border-top: 2px solid #EA86B7; margin: 4px 0;">補助国道</div>';
-            div.innerHTML += '<div style="border-top: 5px solid cyan; margin: 4px 0;">選択中の路線</div>';
-            return div;
-        };
+            const container = L.DomUtil.create('div', 'info legend');
+            container.style.background = 'white';
+            container.style.padding = '10px';
+            container.style.border = '1px solid #ccc';
+            container.style.position = 'relative';
+            container.style.maxWidth = '220px';
+            container.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
+            container.style.fontSize = '14px';
 
+            const closeButton = L.DomUtil.create('button', '', container);
+            closeButton.innerHTML = '×';
+            closeButton.style.position = 'absolute';
+            closeButton.style.top = '5px';
+            closeButton.style.right = '5px';
+            closeButton.style.border = 'none';
+            closeButton.style.background = 'transparent';
+            closeButton.style.fontSize = '16px';
+            closeButton.style.cursor = 'pointer';
+
+            const contentDiv = L.DomUtil.create('div', '', container);
+            const items = [
+                { color: '#633F98', width: '4px', label: '直管国道(有料)' },
+                { color: '#B17CFF', width: '3px', label: '補助国道(有料)' },
+                { color: '#EC1B24', width: '3px', label: '直管国道' },
+                { color: '#EA86B7', width: '2px', label: '補助国道' },
+                { color: 'black', width: '6px', label: '自動車専用道路' },
+                { color: 'cyan', width: '5px', label: '選択中の路線' }
+            ];
+
+            contentDiv.innerHTML += '<strong>路線種別凡例</strong><br>';
+            items.forEach(item => {
+                const row = document.createElement('div');
+                row.style.display = 'flex';
+                row.style.alignItems = 'center';
+                row.style.margin = '4px 0';
+
+                const line = document.createElement('div');
+                line.style.width = '30px';
+                line.style.height = '0';
+                line.style.borderTop = `${item.width} solid ${item.color}`;
+                line.style.marginRight = '8px';
+
+                const label = document.createElement('span');
+                label.textContent = item.label;
+                label.style.fontSize = '12px';
+
+                row.appendChild(line);
+                row.appendChild(label);
+                contentDiv.appendChild(row);
+            });
+
+            closeButton.onclick = function () {
+                container.style.display = 'none';
+                showLegendButton.style.display = 'block';
+            };
+
+            return container;
+        };
         legend.addTo(map);
 
+        const showLegendButton = L.DomUtil.create('button', 'show-legend-button');
+        showLegendButton.innerHTML = '凡例を表示';
+        showLegendButton.style.position = 'absolute';
+        showLegendButton.style.bottom = '25px';
+        showLegendButton.style.right = '10px';
+        showLegendButton.style.zIndex = '1000';
+        showLegendButton.style.padding = '6px 12px';
+        showLegendButton.style.background = 'white';
+        showLegendButton.style.border = '1px solid #ccc';
+        showLegendButton.style.cursor = 'pointer';
+        showLegendButton.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
+        showLegendButton.style.display = 'none';
+
+        map.getContainer().appendChild(showLegendButton);
+        showLegendButton.onclick = function () {
+            document.querySelector('.info.legend').style.display = 'block';
+            showLegendButton.style.display = 'none';
+        };
+        
     </script>
 </body>
 

@@ -220,28 +220,6 @@ fetch('route.geojson')
 
 
 
-document.querySelectorAll('a.small-ref').forEach(link => {
-    link.addEventListener('click', function (e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href').substring(1);
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-            const headerHeight = document.querySelector('header')?.offsetHeight || 50;
-
-            if (window.matchMedia('(max-width: 768px)').matches) {
-                // PC → 右側スクロール
-                const scrollContainer = document.querySelector('.content');
-                scrollContainer.scrollBy(0, -headerHeight);
-            } else {
-                // モバイル → 全体スクロール
-                window.scrollBy(0, -headerHeight);
-            }
-        }
-    });
-});
-
 let lastWidth = window.innerWidth;
 let resizeTimer;
 

@@ -8,7 +8,7 @@ const targetRouteNo = parseInt(configElement.dataset.routeNo, 10);
 const initialInfoElement = document.querySelector('#info').cloneNode(true);
 
 L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
-    attribution: "https://maps.gsi.go.jp/development/ichiran.html地理院タイル</a>",
+    attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
     maxZoom: 18,
 }).addTo(map);
 

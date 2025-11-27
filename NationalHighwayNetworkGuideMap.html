@@ -59,11 +59,16 @@ const map = L.map('map').setView([35.684036, 139.774467], 15);
         // 背景レイヤー定義
         const layers = {
             pale: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
-                attribution: "<a href='https://maps.gsi.go.jp/development/ichiranイル</a>",
+                attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
                 maxZoom: 16,
             }),
             white: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png', {
-                attribution: "https://maps.gsi.go.jp/development/ichiran.html地理院タイル</a>",
+                attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
+                maxZoom: 14,
+            }),
+            picture: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
+                attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
+                maxZoom: 18,
             }),
         };
 

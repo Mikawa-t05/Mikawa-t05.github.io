@@ -219,33 +219,44 @@ fetch('route.geojson')
 
 
 
-
-let lastWidth = window.innerWidth;
-let resizeTimer;
-
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-        // 幅が変わったときだけ処理（高さ変化は無視）
-        if (window.innerWidth !== lastWidth) {
-            lastWidth = window.innerWidth;
+document.querySelectorAll('a.small-ref').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
             const headerHeight = document.querySelector('header')?.offsetHeight || 50;
 
             if (window.matchMedia('(max-width: 768px)').matches) {
-                // PC → .content補正
+                // PC → 右側スクロール
                 const scrollContainer = document.querySelector('.content');
                 scrollContainer.scrollBy(0, -headerHeight);
             } else {
-                // モバイル → 全体スクロール補正
+                // モバイル → 全体スクロール
                 window.scrollBy(0, -headerHeight);
             }
-
-            // 地図も補正
-            const mapContainer = document.querySelector('#map');
-            if (mapContainer) {
-                mapContainer.scrollIntoView({ block: 'start' });
-            }
         }
-    }, 200); // 200ms デバウンス
+    });
+});
+
+// ✅ リサイズ時に両方補正
+window.addEventListener('resize', () => {
+    const headerHeight = document.querySelector('header')?.offsetHeight || 50;
+
+    if (window.matchMedia('(max-width: 768px)').matches) {
+        // モバイル → 全体スクロール補正
+        window.scrollBy(0, -headerHeight);
+    } else {
+        // PC → .content補正
+        const scrollContainer = document.querySelector('.content');
+        scrollContainer.scrollBy(0, -headerHeight);
+    }
+
+    // ✅ 地図の位置も補正（常に最上部に戻す）
+    const mapContainer = document.querySelector('#map');
+    if (mapContainer) {
+        mapContainer.scrollIntoView({ block: 'start' });
+    }
 });

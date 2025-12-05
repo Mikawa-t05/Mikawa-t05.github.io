@@ -58,8 +58,8 @@ const map = L.map('map').setView([35.684036, 139.774467], 15);
 
         // 背景レイヤー定義
         const layers = {
-            std: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: "<a href='https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png'>地理院タイル</a>",
+            std: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+                attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
                 maxZoom: 8,
             }),
             white: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png', {
@@ -73,7 +73,7 @@ const map = L.map('map').setView([35.684036, 139.774467], 15);
         };
 
         layers.white.addTo(map);
-        let currentLayer = layers.pale;
+        let currentLayer = layers.std;
 
         // 背景レイヤー切り替えイベント
         document.getElementById('layerSelector').addEventListener('change', function () {

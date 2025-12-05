@@ -33,9 +33,9 @@
 <body>
     <!-- 背景レイヤー切り替え -->
     <select id="layerSelector" style="position: absolute; z-index: 1000; top: 10px; right: 10px;">
+        <option value="picture">航空写真</option>
         <option value="std">標準地図</option>
         <option value="white">白地図</option>
-        <option value="picture">航空写真</option>
     </select>
 
     <!-- 路線種別切り替え -->
@@ -72,8 +72,8 @@ const map = L.map('map').setView([35.684036, 139.774467], 15);
             }),
         };
 
-        layers.white.addTo(map);
-        let currentLayer = layers.std;
+        layers.picture.addTo(map);
+        let currentLayer = layers.picture;
 
         // 背景レイヤー切り替えイベント
         document.getElementById('layerSelector').addEventListener('change', function () {

@@ -33,7 +33,7 @@
 <body>
     <!-- 背景レイヤー切り替え -->
     <select id="layerSelector" style="position: absolute; z-index: 1000; top: 10px; right: 10px;">
-        <option value="pale">淡色地図</option>
+        <option value="pale">OpenStreetMap</option>
         <option value="white">白地図</option>
         <option value="picture">航空写真</option>
     </select>
@@ -58,8 +58,8 @@ const map = L.map('map').setView([35.684036, 139.774467], 15);
 
         // 背景レイヤー定義
         const layers = {
-            pale: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
-                attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html'>地理院タイル</a>",
+            pale: L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: "<a href='https://www.openstreetmap.org/'>OpenStreetMap</a>",
                 maxZoom: 16,
             }),
             white: L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png', {

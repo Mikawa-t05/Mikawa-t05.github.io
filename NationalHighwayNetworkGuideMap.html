@@ -33,9 +33,9 @@
 <body>
     <!-- 背景レイヤー切り替え -->
     <select id="layerSelector" style="position: absolute; z-index: 1000; top: 10px; right: 10px;">
-        <option value="pale">淡色地図</option>
+        <option value="pale">航空写真</option>
         <option value="white">白地図</option>
-        <option value="picture">航空写真</option>
+        <option value="picture">淡色地図</option>
     </select>
 
     <!-- 路線種別切り替え -->
@@ -66,15 +66,15 @@
         ================================ */
         const layers = {
             pale: L.tileLayer(
-                'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
-                { maxZoom: 16 }
+                'https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg',
+                { maxZoom: 18 }
             ),
             white: L.tileLayer(
                 'https://cyberjapandata.gsi.go.jp/xyz/blank/{z}/{x}/{y}.png'
             ),
             picture: L.tileLayer(
-                'https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg',
-                { maxZoom: 18 }
+                'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
+                { maxZoom: 8 }
             )
         };
 

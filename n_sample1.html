@@ -275,7 +275,7 @@
             });
 
         }
-        
+
         map.on(
             'click',
             resetSelection
@@ -307,6 +307,9 @@
             fetch('segment_master.json')
                 .then(r => r.json()),
 
+            fetch('expwy_R6.geojson')
+                .then(r => r.json()),
+
             fetch('expressway_R6.geojson')
                 .then(r => r.json()),
 
@@ -318,11 +321,11 @@
 
         ]).then(([
             master,
+            expwyData,
             expresswayData,
             semiHighwayData,
             subHighwayData
         ]) => {
-
             segmentMaster = master;
 
             //--------------------------------
@@ -330,8 +333,7 @@
             //--------------------------------
 
             const expwyOutlineLayer =
-                L.geoJSON(expresswayData, {
-
+                L.geoJSON(expwyData, {
                     pane: 'outline',
 
                     style: {
@@ -401,10 +403,9 @@
             // 初期表示
             //--------------------------------
 
-            expwyOutlineLayer.addTo(map);
-            subHighwayLayer.addTo(map);
-            semiHighwayLayer.addTo(map);
             expresswayLayer.addTo(map);
+
+            updateLayer();
 
             //--------------------------------
             // ズーム制御
@@ -413,6 +414,19 @@
             function updateLayer() {
 
                 const zoom = map.getZoom();
+
+                // 自動車専用道路の縁
+                if (zoom >= 11) {
+
+                    if (!map.hasLayer(expwyOutlineLayer))
+                        expwyOutlineLayer.addTo(map);
+
+                } else {
+
+                    if (map.hasLayer(expwyOutlineLayer))
+                        map.removeLayer(expwyOutlineLayer);
+                }
+
                 // 主要道路
                 if (zoom >= 7) {
 
@@ -423,7 +437,6 @@
 
                     if (map.hasLayer(semiHighwayLayer))
                         map.removeLayer(semiHighwayLayer);
-
                 }
 
                 // その他道路
@@ -436,11 +449,8 @@
 
                     if (map.hasLayer(subHighwayLayer))
                         map.removeLayer(subHighwayLayer);
-
                 }
-
             }
-
             updateLayer();
 
             map.on(

@@ -312738,7 +312738,7 @@
     "road_type": "一般国道",
     "expwy": 1,
     "toll_road": null,
-    "DGH_Route": null
+    "DGH_Route": 1
   },
   "34750": {
     "route_name": "３７３号",

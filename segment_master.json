@@ -114793,7 +114793,7 @@
     "nickname": "NULL",
     "expwy": "NULL",
     "toll_road": "NULL",
-    "DGH_Route": "NULL"
+    "DGH_Route": 1
   },
   "10437": {
     "N13_003": "1",
@@ -114826,7 +114826,7 @@
     "nickname": "NULL",
     "expwy": "NULL",
     "toll_road": "NULL",
-    "DGH_Route": "NULL"
+    "DGH_Route": 1
   },
   "10440": {
     "N13_003": "1",
@@ -123862,7 +123862,7 @@
   "11261": {
     "N13_003": "1",
     "N13_007": "1",
-    "route_name": "１２９号",
+    "route_name": "２４６号",
     "ic_name": "NULL",
     "road_type": "一般国道",
     "nickname": "NULL",
@@ -123939,7 +123939,7 @@
   "11268": {
     "N13_003": "1",
     "N13_007": "1",
-    "route_name": "１２９号",
+    "route_name": "２４６号",
     "ic_name": "NULL",
     "road_type": "一般国道",
     "nickname": "NULL",
@@ -123950,7 +123950,7 @@
   "11269": {
     "N13_003": "1",
     "N13_007": "1",
-    "route_name": "１２９号",
+    "route_name": "２４６号",
     "ic_name": "NULL",
     "road_type": "一般国道",
     "nickname": "NULL",
@@ -123961,7 +123961,7 @@
   "11270": {
     "N13_003": "1",
     "N13_007": "1",
-    "route_name": "１２９号",
+    "route_name": "２４６号",
     "ic_name": "NULL",
     "road_type": "一般国道",
     "nickname": "NULL",
@@ -123972,7 +123972,7 @@
   "11271": {
     "N13_003": "1",
     "N13_007": "1",
-    "route_name": "１２９号",
+    "route_name": "２４６号",
     "ic_name": "NULL",
     "road_type": "一般国道",
     "nickname": "NULL",
@@ -124005,7 +124005,7 @@
   "11274": {
     "N13_003": "1",
     "N13_007": "1",
-    "route_name": "１２９号",
+    "route_name": "２４６号",
     "ic_name": "NULL",
     "road_type": "一般国道",
     "nickname": "NULL",
@@ -124258,7 +124258,7 @@
   "11297": {
     "N13_003": "1",
     "N13_007": "1",
-    "route_name": "１２９号",
+    "route_name": "２４６号",
     "ic_name": "NULL",
     "road_type": "一般国道",
     "nickname": "NULL",
@@ -124269,7 +124269,7 @@
   "11298": {
     "N13_003": "1",
     "N13_007": "1",
-    "route_name": "１２９号",
+    "route_name": "２４６号",
     "ic_name": "NULL",
     "road_type": "一般国道",
     "nickname": "NULL",
@@ -486686,7 +486686,7 @@
   "44245": {
     "N13_003": "1",
     "N13_007": "1",
-    "route_name": "１２９号",
+    "route_name": "２４６号",
     "ic_name": "NULL",
     "road_type": "一般国道",
     "nickname": "NULL",
@@ -486697,7 +486697,7 @@
   "44246": {
     "N13_003": "1",
     "N13_007": "1",
-    "route_name": "１２９号",
+    "route_name": "２４６号",
     "ic_name": "NULL",
     "road_type": "一般国道",
     "nickname": "NULL",

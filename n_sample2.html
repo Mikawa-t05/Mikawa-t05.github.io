@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>路線表示</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<style>
+
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+}
+
+#map{
+    width:100%;
+    height:100%;
+}
+
+#routeSelect{
+    position:absolute;
+    top:10px;
+    left:50px;
+    z-index:1000;
+    padding:5px;
+}
+
+</style>
+</head>
+<body>
+
+<select id="routeSelect">
+    <option value="">路線選択</option>
+</select>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+
+const map = L.map("map").setView([36,138],6);
+
+L.tileLayer(
+    "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
+    {
+        attribution:"地理院タイル"
+    }
+).addTo(map);
+
+const segmentIndex = {};
+
+Promise.all([
+
+    fetch("expressway_R6.geojson").then(r=>r.json()),
+    fetch("semihighway_R6.geojson").then(r=>r.json()),
+    fetch("subhighway_R6.geojson").then(r=>r.json()),
+    fetch("route_segments.json").then(r=>r.json())
+
+])
+.then(([exp,semi,sub,routes])=>{
+
+    const allFeatures = [
+
+        ...exp.features,
+        ...semi.features,
+        ...sub.features
+
+    ];
+
+    const merged = {
+        type:"FeatureCollection",
+        features:allFeatures
+    };
+
+    const layer = L.geoJSON(merged,{
+
+        style:{
+            color:"#808080",
+            weight:3,
+            opacity:0.5
+        },
+
+        onEachFeature:(feature,layer)=>{
+
+            const id =
+                Number(feature.properties.segment_id);
+
+            segmentIndex[id] = layer;
+
+        }
+
+    }).addTo(map);
+
+    map.fitBounds(layer.getBounds());
+
+    const select =
+        document.getElementById("routeSelect");
+
+    Object.keys(routes)
+        .sort()
+        .forEach(route=>{
+
+            const option =
+                document.createElement("option");
+
+            option.value = route;
+            option.textContent = route;
+
+            select.appendChild(option);
+
+        });
+
+    select.addEventListener("change",()=>{
+
+        Object.values(segmentIndex)
+            .forEach(layer=>{
+
+                layer.setStyle({
+                    color:"#808080",
+                    weight:3,
+                    opacity:0.6
+                });
+
+            });
+
+        const routeName =
+            select.value;
+
+        if(!routeName) return;
+
+        const ids =
+            routes[routeName];
+
+        const bounds = [];
+
+        ids.forEach(id=>{
+
+            const layer =
+                segmentIndex[id];
+
+            if(!layer) return;
+
+            layer.setStyle({
+
+                color:"#ff0000",
+                weight:6,
+                opacity:1
+
+            });
+
+            bounds.push(
+                ...layer.getLatLngs().flat(10)
+            );
+
+        });
+
+        if(bounds.length){
+
+            map.fitBounds(
+                L.latLngBounds(bounds),
+                {padding:[20,20]}
+            );
+
+        }
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>
